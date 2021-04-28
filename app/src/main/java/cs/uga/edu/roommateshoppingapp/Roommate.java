@@ -16,12 +16,28 @@ public class Roommate {
         this.roommateGroup = null;
     }
 
+    Roommate(String name, String email, String username){
+        this.name = name;
+        this.email = email;
+        this.username = username;
+        this.password = null;
+        this.roommateGroup = null;
+    }
+
     Roommate(String name, String email, String username, RoommateGroup roommateGroup){
         this.name = name;
         this.email = email;
         this.username = username;
         this.password = null;
         this.roommateGroup = roommateGroup;
+    }
+
+    Roommate(String name, String email, String username, String password){
+        this.name = name;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.roommateGroup = null;
     }
 
     Roommate(String name, String email, String username, String password, RoommateGroup roommateGroup){
@@ -64,7 +80,7 @@ public class Roommate {
         return this.username;
     }
 
-    public String setPassword(){
+    public String getPassword(){
         return this.password;
     }
 
