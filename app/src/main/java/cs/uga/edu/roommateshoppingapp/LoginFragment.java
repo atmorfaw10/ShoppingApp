@@ -99,8 +99,10 @@ public class LoginFragment extends Fragment {
                 userEmail = email.getText().toString();
                 userPassword = password.getText().toString();
                 if (userEmail.equals("") || userPassword.equals("")) {
-                    Toast.makeText(getActivity(), "Missing email or password",
-                            Toast.LENGTH_SHORT).show();
+                    if(userEmail.equals(""))
+                        email.setError("Field cannot be empty");
+                    if(userPassword.equals(""))
+                        password.setError("Field cannot be empty");
                 } else {
                     dbConnection.signInRoommate(getActivity(), userEmail, userPassword);
                 }

@@ -15,9 +15,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 public class FirebaseDBConnection {
@@ -45,9 +48,24 @@ public class FirebaseDBConnection {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+
                             FirebaseUser user = mAuth.getCurrentUser();
+                            DatabaseReference ref = database.getReference("/users");
+                            DatabaseReference usersRef = ref.child(user.getUid());
+                            Map<String, String> roommateMap = new HashMap<>();
+                            roommateMap.put("name", newRoommate.getName());
+                            roommateMap.put("email", newRoommate.getEmail());
+                            roommateMap.put("username", newRoommate.getUsername());
+                            usersRef.setValue(roommateMap);
+
                             sendEmailVerification(context);
                             updateCurrentUser(user);
+
+                            Intent home = new Intent();
+                            home.setClass(context, Home.class);
+                            home.putExtra("FirebaseUser", user);
+
+                            context.startActivity(home);
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(context, "Authentication failed.",

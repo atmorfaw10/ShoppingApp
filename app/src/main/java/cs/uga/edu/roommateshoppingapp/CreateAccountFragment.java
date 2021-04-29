@@ -38,11 +38,16 @@ public class CreateAccountFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private FirebaseDBConnection dbConnection;
+
+    private EditText textInputName; //name edit text view
     private EditText textInputEmail; // email edit text view
     private EditText textUserName; // user name edit text view
     private EditText textPassword; // password edit text view
     private EditText reEnteredPassword; // re-entered password edit text view
 
+    String nameInput; // string of inputted name
+    String usernameInput; // string of inputted username
     String emailInput; // string of inputted email
     String passwordInput; // string of inputted password
     String secondPasswordInput; // string of second inputted password
@@ -86,6 +91,7 @@ public class CreateAccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View createAccountFragment = inflater.inflate(R.layout.fragment_create_account, container,false);
 
+        textInputName = (EditText) createAccountFragment.findViewById(R.id.name);
         textUserName = (EditText) createAccountFragment.findViewById(R.id.user_name_text);
         textInputEmail = (EditText) createAccountFragment.findViewById(R.id.email);
         textPassword = (EditText) createAccountFragment.findViewById(R.id.pass_word);
@@ -97,18 +103,57 @@ public class CreateAccountFragment extends Fragment {
         registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if((validateEmail() == true) && (validatePassword() == true) && (confirmPassword() == true))
+                if( validateName() && validateUserName() && validateEmail() && validatePassword() && confirmPassword())
                 {
-                    Intent home = new Intent();
-                    home.setClass(getActivity(), Home.class);
-                    getActivity().startActivity(home);
-                } else {
-                    // do nothing
+                    String name = textInputName.getText().toString();
+                    String username = textUserName.getText().toString();
+                    String email = textInputEmail.getText().toString();
+                    String password = textPassword.getText().toString();
+
+                    Roommate newRoommate = new Roommate(name, email, username, password);
+                    dbConnection = new FirebaseDBConnection();
+                    dbConnection.createNewRoommate(getActivity(), newRoommate);
                 }
             }
         });
 
         return createAccountFragment;
+    }
+
+    /**
+     * Validate the user's name
+     * @return true or false if the name is valid
+     */
+    public boolean validateName() {
+       nameInput = textInputName.getEditableText().toString().trim();
+
+        if(nameInput.isEmpty())
+        {
+            textInputName.setError("Field cannot be empty");
+            return false;
+        } else
+        {
+            textInputName.setError(null);
+            return true;
+        }
+    }
+
+    /**
+     * Validate the user's username
+     * @return true or false if the username is valid
+     */
+    public boolean validateUserName() {
+        usernameInput = textUserName.getEditableText().toString().trim();
+
+        if(usernameInput.isEmpty())
+        {
+            textUserName.setError("Field cannot be empty");
+            return false;
+        } else
+        {
+            textUserName.setError(null);
+            return true;
+        }
     }
 
     /**

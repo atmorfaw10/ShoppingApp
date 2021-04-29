@@ -26,8 +26,6 @@ public class SplashActivity extends AppCompatActivity {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Roommate newRoommate = new Roommate("Twumasi", "twumasi.pennoh@gmail.com", "tkp12", "hello123");
-//                dbConnection.createNewRoommate(SplashActivity.this, newRoommate);
                 ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.second_splash, new CreateAccountFragment()).commit();
@@ -38,7 +36,6 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
-
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 LoginFragment loginFragment = new LoginFragment();
                 fragmentTransaction.replace(R.id.second_splash, loginFragment).commit();
