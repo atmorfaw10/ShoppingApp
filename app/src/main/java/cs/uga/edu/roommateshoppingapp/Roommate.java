@@ -1,5 +1,7 @@
 package cs.uga.edu.roommateshoppingapp;
 
+import java.io.Serializable;
+
 public class Roommate {
 
     private String name;
@@ -13,6 +15,14 @@ public class Roommate {
         this.email = null;
         this.username = null;
         this.password = null;
+        this.roommateGroup = null;
+    }
+
+    Roommate(String email, String password){
+        this.name = null;
+        this.email = email;
+        this.username = null;
+        this.password = password;
         this.roommateGroup = null;
     }
 

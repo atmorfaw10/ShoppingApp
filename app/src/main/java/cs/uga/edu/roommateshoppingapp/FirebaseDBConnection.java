@@ -2,6 +2,8 @@ package cs.uga.edu.roommateshoppingapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
 import java.util.concurrent.Executor;
 
 public class FirebaseDBConnection {
@@ -30,7 +33,7 @@ public class FirebaseDBConnection {
         currentUser = null;
     }
 
-    public boolean createNewRoommate(Activity context, Roommate newRoommate){
+    public void createNewRoommate(Activity context, Roommate newRoommate){
         String email = newRoommate.getEmail();
         String password = newRoommate.getPassword();
         boolean newAccountCreated = false;
@@ -43,6 +46,7 @@ public class FirebaseDBConnection {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            sendEmailVerification(context);
                             updateCurrentUser(user);
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -52,13 +56,9 @@ public class FirebaseDBConnection {
                         }
                     }
                 });
-        if(this.currentUser != null){
-            newAccountCreated = true;
-        }
-        return newAccountCreated;
     }
 
-    public boolean signInRoommate(Activity context, String email, String password){
+    public void signInRoommate(Activity context, String email, String password){
         boolean signInSuccessful = false;
 
         mAuth.signInWithEmailAndPassword(email, password)
@@ -69,20 +69,21 @@ public class FirebaseDBConnection {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            sendEmailVerification(context);
                             updateCurrentUser(user);
+
+                            Intent home = new Intent();
+                            home.setClass(context, Home.class);
+                            home.putExtra("FirebaseUser", user);
+
+                            context.startActivity(home);
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(context, "Authentication failed.",
+                            Toast.makeText(context, "Authentication failed. Please try again",
                                     Toast.LENGTH_SHORT).show();
                             updateCurrentUser(null);
                         }
                     }
                 });
-        if(this.currentUser != null){
-            signInSuccessful = true;
-        }
-        return signInSuccessful;
     }
 
     private void sendEmailVerification(Activity context){
@@ -103,7 +104,7 @@ public class FirebaseDBConnection {
         return mAuth;
     }
 
-    private void updateCurrentUser(FirebaseUser newUser){
+    public void updateCurrentUser(FirebaseUser newUser) {
         this.currentUser = newUser;
     }
 }

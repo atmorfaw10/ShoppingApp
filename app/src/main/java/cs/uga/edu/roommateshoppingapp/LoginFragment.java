@@ -3,14 +3,22 @@ package cs.uga.edu.roommateshoppingapp;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.util.Patterns;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +26,8 @@ import android.util.Patterns;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
+
+    private static final String TAG = "LoginFragment";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,7 +38,9 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private EditText username;
+    private FirebaseDBConnection dbConnection;
+
+    private EditText email;
     private EditText password;
     private Button signInButton;
 
@@ -73,16 +85,25 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View loginFragment = inflater.inflate(R.layout.fragment_login,container,false);
 
-        username = (EditText) loginFragment.findViewById(R.id.username_email);
+        email = (EditText) loginFragment.findViewById(R.id.login_email);
         password = (EditText) loginFragment.findViewById(R.id.password);
         signInButton = (Button) loginFragment.findViewById(R.id.login);
+        userEmail = "";
+        userPassword = "";
+
+        dbConnection = new FirebaseDBConnection();
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent home = new Intent();
-                home.setClass(getActivity(), Home.class);
-                getActivity().startActivity(home);
+                userEmail = email.getText().toString();
+                userPassword = password.getText().toString();
+                if (userEmail.equals("") || userPassword.equals("")) {
+                    Toast.makeText(getActivity(), "Missing email or password",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    dbConnection.signInRoommate(getActivity(), userEmail, userPassword);
+                }
             }
         });
 

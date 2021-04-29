@@ -11,14 +11,11 @@ import android.widget.Button;
 public class SplashActivity extends AppCompatActivity {
     private Button createAccount;
     private Button signIn;
-    private FirebaseDBConnection dbConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash2);
-
-        dbConnection = new FirebaseDBConnection();
 
         createAccount = (Button) findViewById(R.id.create_account); //button for account creation
         signIn = (Button) findViewById(R.id.signIn); // button for user to sign into account
@@ -41,10 +38,10 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
+
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.second_splash, new LoginFragment()).commit();
-//                Roommate newRoommate = new Roommate("Twumasi", "twumasi.pennoh@gmail.com", "tkp12", "hello123");
-//                dbConnection.signInRoommate(SplashActivity.this, newRoommate.getEmail(), newRoommate.getPassword());
+                LoginFragment loginFragment = new LoginFragment();
+                fragmentTransaction.replace(R.id.second_splash, loginFragment).commit();
             }
         });
     }
