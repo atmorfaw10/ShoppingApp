@@ -1,6 +1,8 @@
 package cs.uga.edu.roommateshoppingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.View;
@@ -15,20 +17,31 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash2);
 
-        createAccount = (Button) findViewById(R.id.create_account);
-        signIn = (Button) findViewById(R.id.signIn);
 
+        createAccount = (Button) findViewById(R.id.create_account); //button for account creation
+        signIn = (Button) findViewById(R.id.signIn); // button for user to sign into account
+
+        /**
+         * on click listener method for opening the fragment that takes the user to set up an account
+         */
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.second_splash, new CreateAccountFragment()).commit();
             }
         });
 
+        /**
+         * on click listener method for opening the fragment that takes the user to sign into their account
+         */
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.second_splash, new LoginFragment()).commit();
             }
         });
     }

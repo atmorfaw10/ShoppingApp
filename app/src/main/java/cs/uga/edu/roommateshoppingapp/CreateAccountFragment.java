@@ -1,12 +1,18 @@
 package cs.uga.edu.roommateshoppingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +20,14 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class CreateAccountFragment extends Fragment {
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^" +
+            "(?=.*[0-9])" +  // at least 1 digit
+            "(?=.*[a-z])" +  // at least 1 lower case letter
+            "(?=.*[A-Z])" +  // at least 1 upper case letter
+            "(?=.*[@#$%^&+=])" + // at least 1 special character
+            "(?=\\S+$)" + // no white spaces
+            ".{6,}" + // at least 6 characters
+            "$");
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,6 +37,17 @@ public class CreateAccountFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EditText textInputEmail; // email edit text view
+    private EditText textUserName; // user name edit text view
+    private EditText textPassword; // password edit text view
+    private EditText reEnteredPassword; // re-entered password edit text view
+
+    String emailInput; // string of inputted email
+    String passwordInput; // string of inputted password
+    String secondPasswordInput; // string of second inputted password
+
+    Button registration;
 
     public CreateAccountFragment() {
         // Required empty public constructor
@@ -59,6 +84,95 @@ public class CreateAccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_account, container, false);
+        View createAccountFragment = inflater.inflate(R.layout.fragment_create_account, container,false);
+
+        textUserName = (EditText) createAccountFragment.findViewById(R.id.user_name_text);
+        textInputEmail = (EditText) createAccountFragment.findViewById(R.id.email);
+        textPassword = (EditText) createAccountFragment.findViewById(R.id.pass_word);
+        reEnteredPassword = (EditText) createAccountFragment.findViewById(R.id.confirm_password);
+
+        registration = (Button) createAccountFragment.findViewById(R.id.register);
+
+
+        registration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((validateEmail() == true) && (validatePassword() == true) && (confirmPassword() == true))
+                {
+                    Intent home = new Intent();
+                    home.setClass(getActivity(), Home.class);
+                    getActivity().startActivity(home);
+                } else {
+                    // do nothing
+                }
+            }
+        });
+
+        return createAccountFragment;
+    }
+
+    /**
+     * Validate the user's email
+     * @return true or false if the email is valid
+     */
+    public boolean validateEmail() {
+        emailInput = textInputEmail.getEditableText().toString().trim();
+
+        if(emailInput.isEmpty())
+        {
+            textInputEmail.setError("Field cannot be empty");
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailInput).matches())
+        {
+            textInputEmail.setError("Please enter a valid email address ");
+            return false;
+        } else
+        {
+            textInputEmail.setError(null);
+            return true;
+        }
+    }
+
+    /**
+     * Validate the user's password
+     * @return true of false if password is valid
+     */
+    public boolean validatePassword() {
+        passwordInput = textPassword.getEditableText().toString().trim();
+
+        if(passwordInput.isEmpty())
+        {
+            textPassword.setError("Field cannot be empty");
+            return false;
+        } else if (!PASSWORD_PATTERN.matcher(passwordInput).matches())
+        {
+            textPassword.setError("Password to weak");
+            return false;
+        } else
+        {
+            textPassword.setError(null);
+            return true;
+        }
+    }
+
+    /**
+     * Check if the passwords match
+     * @return true if the passwords match and false otherwise
+     */
+    public boolean confirmPassword() {
+        secondPasswordInput = reEnteredPassword.getEditableText().toString().trim();
+
+        if(secondPasswordInput.isEmpty())
+        {
+            reEnteredPassword.setError("Field cannot be empty");
+            return false;
+        } else if(!secondPasswordInput.equals(passwordInput))
+        {
+            reEnteredPassword.setError("Passwords do not match");
+            return false;
+        } else {
+            reEnteredPassword.setError(null);
+            return true;
+        }
     }
 }
