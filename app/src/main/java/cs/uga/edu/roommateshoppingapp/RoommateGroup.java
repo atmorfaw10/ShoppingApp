@@ -48,6 +48,9 @@ public class RoommateGroup {
     }
 
     public void addRoommate(Roommate newRoommate){
+        if(this.roommates == null){
+            this.roommates = new ArrayList<>();
+        }
         this.roommates.add(newRoommate);
     }
 
@@ -69,6 +72,17 @@ public class RoommateGroup {
         for(int i = 0; i < roommates.size(); i++) {
             this.roommates.add(roommates.get(i));
         }
+    }
+
+    public Roommate getRoommate(String id){
+        Roommate newRoommate = null;
+        for(int i = 0; i < roommates.size(); i++){
+            if(roommates.get(i).getId().equals(id)){
+                return roommates.get(i);
+            }
+        }
+
+        return newRoommate;
     }
 
     public void setShoppingList(ShoppingList newShoppingList){

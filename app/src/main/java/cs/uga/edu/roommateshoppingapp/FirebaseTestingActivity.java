@@ -15,6 +15,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class FirebaseTestingActivity extends AppCompatActivity {
 
@@ -25,23 +28,48 @@ public class FirebaseTestingActivity extends AppCompatActivity {
     private Button createShoppingListButton;
     private Button addItemButton;
     private Button markItemButton;
+    private Button retrieveGroupDataButton;
     private FirebaseDBConnection dbConnection;
 
     public static class User {
         public String name;
         public String email;
+        public String roommateGroup;
         public String username;
 
         public User(){
             name = null;
             email = null;
             username = null;
+            roommateGroup = null;
         }
 
-        public User(String name, String email, String username){
+        public User(String name, String email, String roommateGroup, String username){
             this.name = name;
             this.email = email;
+            this.roommateGroup = roommateGroup;
             this.username = username;
+        }
+    }
+
+    public static class ShoppingListItem {
+        public String name;
+        public String price;
+        public String purchased;
+        public String purchaser;
+
+        public ShoppingListItem(){
+            name = null;
+            price = null;
+            purchased = null;
+            purchaser = null;
+        }
+
+        public ShoppingListItem(String name, String price, String purchased, String purchaser){
+            this.name = name;
+            this.price = price;
+            this.purchased = purchased;
+            this.purchaser = purchaser;
         }
     }
 
@@ -159,7 +187,144 @@ public class FirebaseTestingActivity extends AppCompatActivity {
                 dbConnection.modifyShoppingListItem(groupName, 1, newItem);
             }
         });
+
+        retrieveGroupDataButton = (Button) findViewById(R.id.retrieve_group_data);
+        retrieveGroupDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //you need the group name
+                //first you need to know the number of roommates
+                     //for each roommate, get their info in the users section
+                //then, get the shopping list
+                     //get each item
+
+                String groupName = "group1";
+                final RoommateGroup group = new RoommateGroup();
+                group.setGroupName(groupName);
+                final DatabaseReference sizeRef = FirebaseDatabase.getInstance().getReference("roommateGroups/" + groupName + "/size");
+                sizeRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        final long size = (long) snapshot.getValue();
+                        Log.d(TAG, "Size of " + groupName + " is " + size);
+                        final DatabaseReference roommatesRef = FirebaseDatabase.getInstance().getReference("roommateGroups/" + groupName + "/roommates");
+                        final ArrayList<String> roommateIds = new ArrayList<>();
+                        roommatesRef.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                roommateIds.add((String) snapshot.getValue());
+                                Log.d(TAG, "roommate Id " + snapshot.getValue() + " has been added");
+
+                                if(roommateIds.size() == size){
+                                    //get each roommates information
+                                    for(int i = 0; i < roommateIds.size(); i++){
+                                        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                                        final String key = roommateIds.get(i);
+                                        userRef.orderByChild(roommateIds.get(i)).addChildEventListener(new ChildEventListener() {
+                                            @Override
+                                            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                                if(snapshot.getKey().equalsIgnoreCase(key)){
+                                                    Log.d(TAG, "roommate " + snapshot.getKey() + " has been retrieved");
+                                                    User user = snapshot.getValue(User.class);
+                                                    Log.d(TAG, "name: " + user.name);
+                                                    Log.d(TAG, "email: " + user.email);
+                                                    Log.d(TAG, "username: " + user.username);
+                                                    Roommate roommate1 = new Roommate();
+                                                    roommate1.setId(key);
+                                                    roommate1.setName(user.name);
+                                                    roommate1.setEmail(user.email);
+                                                    roommate1.setUsername(user.username);
+                                                    roommate1.setRoommateGroup(group);
+                                                    group.addRoommate(roommate1);
+                                                    if(group.getRoommates().size() == size){
+                                                        ShoppingList list = new ShoppingList();
+                                                        final DatabaseReference listSizeRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName + "/size");
+                                                        listSizeRef.addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                final long shoppingListSize = (long) snapshot.getValue();
+                                                                final DatabaseReference itemRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName);
+                                                                itemRef.addChildEventListener(new ChildEventListener() {
+                                                                    @Override
+                                                                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                                                        if(!snapshot.getKey().equals("size")){
+                                                                            Log.d(TAG, "Shopping List item " + snapshot.getKey() + " has been retrieved");
+                                                                            ShoppingListItem item = snapshot.getValue(ShoppingListItem.class);
+                                                                            Log.d(TAG, "price: " + item.price);
+                                                                            Log.d(TAG, "purchased: " + item.purchased);
+                                                                            Log.d(TAG, "purchaser: " + item.purchaser);
+
+                                                                            list.addShoppingListItem(
+                                                                                    new Item(snapshot.getKey(), Double.parseDouble(item.price), Boolean.parseBoolean(item.purchased), group.getRoommate(item.purchaser)));
+
+                                                                            if(list.getShoppingListSize() == shoppingListSize){
+                                                                                group.setShoppingList(list);
+                                                                                Log.d(TAG, "Shopping list for " + groupName + "has been added to group data");
+                                                                            }
+                                                                        }
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                                                                    @Override
+                                                                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                                                                    @Override
+                                                                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull DatabaseError error) {}
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                                            @Override
+                                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                                            @Override
+                                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {}
+                                        });
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) { }
+                });
+            }
+        });
     }
+
+
 
 
 }

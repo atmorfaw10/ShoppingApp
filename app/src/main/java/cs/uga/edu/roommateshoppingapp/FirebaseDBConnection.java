@@ -79,7 +79,7 @@ public class FirebaseDBConnection {
         DatabaseReference ref = database.getReference("/roommateGroups/" + group.getGroupName());
         DatabaseReference sizeRef = ref.child("size");
         int numOfRoommates = roommates.size();
-        sizeRef.setValue(Integer.toString(numOfRoommates));
+        sizeRef.setValue(numOfRoommates);
 
         if(roommates.size() == 1){
             DatabaseReference rmGroupRef = ref.child("roommates");
@@ -93,8 +93,8 @@ public class FirebaseDBConnection {
     }
 
     public void createShoppingList(String groupName){
-        DatabaseReference ref = database.getReference("/shoppingLists/" + groupName + "/");
-        ref.setValue("");
+        DatabaseReference ref = database.getReference("/shoppingLists/" + groupName + "/size");
+        ref.setValue(0);
         Log.d(TAG, "Shopping List for " + groupName + " has been created.");
     }
 

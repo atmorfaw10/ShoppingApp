@@ -61,5 +61,13 @@ public class ShoppingList {
             shoppingListItems.remove(item);
         }
     }
+    
+    public void addShoppingListItem(Item newItem){
+        shoppingListItems.add(newItem);
+    }
+
+    public int getShoppingListSize(){
+        return shoppingListItems.size();
+    }
 
 }
