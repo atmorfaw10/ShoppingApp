@@ -11,6 +11,7 @@ import android.widget.Button;
 public class SplashActivity extends AppCompatActivity {
     private Button createAccount;
     private Button signIn;
+    private FirebaseDBConnection dbConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,10 @@ public class SplashActivity extends AppCompatActivity {
                 ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.second_splash, new CreateAccountFragment()).commit();
+
+//                Roommate newRoommate = new Roommate("Kwaku", "twumasi.pennoh1@gmail.com", "kwak12", "hello124");
+//                dbConnection = new FirebaseDBConnection();
+//                dbConnection.createNewRoommate(SplashActivity.this, newRoommate);
             }
         });
 
