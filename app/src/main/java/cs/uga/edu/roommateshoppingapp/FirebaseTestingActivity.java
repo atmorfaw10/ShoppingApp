@@ -97,15 +97,17 @@ public class FirebaseTestingActivity extends AppCompatActivity {
                 userRef.orderByChild(user.getUid()).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
-                        Log.d(TAG, "name: " + user.name);
-                        Log.d(TAG, "email: " + user.email);
-                        Log.d(TAG, "username: " + user.username);
-                        roommate1.setName(user.name);
-                        roommate1.setEmail(user.email);
-                        roommate1.setUsername(user.username);
-                        group1.addRoommate(roommate1);
-                        dbConnection.createRoommateGroup(FirebaseTestingActivity.this, group1);
+                        if (!snapshot.getKey().equals("size")) {
+                            FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                            Log.d(TAG, "name: " + user.name);
+                            Log.d(TAG, "email: " + user.email);
+                            Log.d(TAG, "username: " + user.username);
+                            roommate1.setName(user.name);
+                            roommate1.setEmail(user.email);
+                            roommate1.setUsername(user.username);
+                            group1.addRoommate(roommate1);
+                            dbConnection.createRoommateGroup(FirebaseTestingActivity.this, group1);
+                        }
                     }
 
                     @Override

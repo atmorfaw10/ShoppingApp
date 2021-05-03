@@ -120,37 +120,49 @@ public class FirebaseDBConnection {
 
                             FirebaseUser user = mAuth.getCurrentUser();
                             newRoommate.setId(user.getUid());
+                            DatabaseReference ref = database.getReference("/users");
                             DatabaseReference sizeRef = database.getReference("/users/size");
-                            sizeRef.addValueEventListener(new ValueEventListener() {
+                            ref.orderByChild("size").addChildEventListener(new ChildEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    long size = (long) snapshot.getValue();
-                                    DatabaseReference ref = database.getReference("/users");
-                                    DatabaseReference usersRef = ref.child(user.getUid());
-                                    Map<String, String> roommateMap = new HashMap<>();
-                                    roommateMap.put("name", newRoommate.getName());
-                                    roommateMap.put("email", newRoommate.getEmail());
-                                    roommateMap.put("username", newRoommate.getUsername());
-                                    roommateMap.put("roommateGroup", "");
-                                    usersRef.setValue(roommateMap);
-                                    sizeRef.setValue(size+1);
-                                    Log.d(TAG, "new user's data has been added to database");
+                                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    if(snapshot.getKey().equals("size")){
+                                        long size = (long) snapshot.getValue();
+                                        DatabaseReference ref = database.getReference("/users");
+                                        DatabaseReference usersRef = ref.child(user.getUid());
+                                        Map<String, String> roommateMap = new HashMap<>();
+                                        roommateMap.put("name", newRoommate.getName());
+                                        roommateMap.put("email", newRoommate.getEmail());
+                                        roommateMap.put("username", newRoommate.getUsername());
+                                        roommateMap.put("roommateGroup", "");
+                                        usersRef.setValue(roommateMap);
+                                        sizeRef.setValue(size+1);
+                                        Log.d(TAG, "new user's data has been added to database");
 
-                                    sendEmailVerification(context);
-                                    updateCurrentUser(user);
+                                        sendEmailVerification(context);
+                                        updateCurrentUser(user);
 
-                                    // Home class
-                                    Intent home = new Intent();
-                                    home.setClass(context, Home.class);
-                                    home.putExtra("FirebaseUser", mAuth.getCurrentUser());
-                                    home.putExtra("currentRoommate", newRoommate);
-                                    context.startActivity(home);
+                                        // Home class
+                                        Intent home = new Intent();
+                                        home.setClass(context, Home.class);
+                                        home.putExtra("FirebaseUser", mAuth.getCurrentUser());
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("currentRoommate", newRoommate);
+                                        home.putExtra("bundle", bundle);
+                                        context.startActivity(home);
+                                    }
                                 }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
 
-                                }
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {}
                             });
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -383,13 +395,15 @@ public class FirebaseDBConnection {
         userRef.orderByChild(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
-                Log.d(TAG, "name: " + user.name);
-                Log.d(TAG, "email: " + user.email);
-                Log.d(TAG, "username: " + user.username);
-                roommate.setName(user.name);
-                roommate.setEmail(user.email);
-                roommate.setUsername(user.username);
+                if(!snapshot.getKey().equals("size")) {
+                    FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                    Log.d(TAG, "name: " + user.name);
+                    Log.d(TAG, "email: " + user.email);
+                    Log.d(TAG, "username: " + user.username);
+                    roommate.setName(user.name);
+                    roommate.setEmail(user.email);
+                    roommate.setUsername(user.username);
+                }
             }
 
             @Override

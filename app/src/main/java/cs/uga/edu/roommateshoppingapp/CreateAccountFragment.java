@@ -106,12 +106,14 @@ public class CreateAccountFragment extends Fragment {
         View createAccountFragment = inflater.inflate(R.layout.fragment_create_account, container,false);
 
         textUserName = (EditText) createAccountFragment.findViewById(R.id.user_name_text);
+        textInputName = (EditText) createAccountFragment.findViewById(R.id.name);
         textInputEmail = (EditText) createAccountFragment.findViewById(R.id.email);
         textPassword = (EditText) createAccountFragment.findViewById(R.id.pass_word);
         reEnteredPassword = (EditText) createAccountFragment.findViewById(R.id.confirm_password);
 
         registration = (Button) createAccountFragment.findViewById(R.id.register);
 
+        dbConnection = new FirebaseDBConnection();
 
         registration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,13 +130,18 @@ public class CreateAccountFragment extends Fragment {
                             userRef.orderByKey().addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                                    increaseNumUsers();
-                                    FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
-                                    if(user.username.equals(usernameInput)) {
-                                        textUserName.setError("Username has been taken. Try a different username");
-                                    } else if(getNumUsers() == size){
-                                        Roommate newRoommate = new Roommate(textInputEmail.getText().toString(), textPassword.getText().toString());
-                                        dbConnection.createNewRoommate(getActivity(), newRoommate);
+                                    if (!snapshot.getKey().equals("size")) {
+                                        increaseNumUsers();
+                                        FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                                        if (user.username.equals(usernameInput)) {
+                                            textUserName.setError("Username has been taken. Try a different username");
+                                        } else if (getNumUsers() == size) {
+                                            Roommate newRoommate = new Roommate(textInputEmail.getText().toString(), textPassword.getText().toString());
+                                            newRoommate.setName(textInputName.getText().toString());
+                                            newRoommate.setUsername(textUserName.getText().toString());
+
+                                            dbConnection.createNewRoommate(getActivity(), newRoommate);
+                                        }
                                     }
                                 }
 

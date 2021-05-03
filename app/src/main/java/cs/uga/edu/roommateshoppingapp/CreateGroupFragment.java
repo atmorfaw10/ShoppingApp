@@ -153,31 +153,33 @@ public class CreateGroupFragment extends Fragment {
                     userRef.orderByChild(userId).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                            FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
-                            if(snapshot.getKey().equals(userId)){
-                                Log.d(TAG, "name: " + user.name);
-                                Log.d(TAG, "email: " + user.email);
-                                Log.d(TAG, "username: " + user.username);
-                                roommate1.setName(user.name);
-                                roommate1.setEmail(user.email);
-                                roommate1.setUsername(user.username);
-                                //add roommate to RoommateGroup object
-                                group.addRoommate(roommate1);
-                                roommate1.setRoommateGroup(group);
-                                //add roommate to group info in database
-                                dbConnection.createRoommateGroup(getActivity(), group);
+                            if (!snapshot.getKey().equals("size")) {
+                                FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                                if (snapshot.getKey().equals(userId)) {
+                                    Log.d(TAG, "name: " + user.name);
+                                    Log.d(TAG, "email: " + user.email);
+                                    Log.d(TAG, "username: " + user.username);
+                                    roommate1.setName(user.name);
+                                    roommate1.setEmail(user.email);
+                                    roommate1.setUsername(user.username);
+                                    //add roommate to RoommateGroup object
+                                    group.addRoommate(roommate1);
+                                    roommate1.setRoommateGroup(group);
+                                    //add roommate to group info in database
+                                    dbConnection.createRoommateGroup(getActivity(), group);
 
-                                //continue to next page
-                                AddRoommateFragment addRoommateFragment = new AddRoommateFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("roommateGroup", group);
-                                bundle.putSerializable("currentRoommate", roommate1);
-                                bundle.putAll(getArguments());
-                                addRoommateFragment.setArguments(bundle);
-                                FragmentManager fm = getActivity().getSupportFragmentManager();
-                                FragmentTransaction transaction = fm.beginTransaction();
-                                transaction.replace(R.id.fragment_create_group, addRoommateFragment);
-                                transaction.commit();
+                                    //continue to next page
+                                    AddRoommateFragment addRoommateFragment = new AddRoommateFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("roommateGroup", group);
+                                    bundle.putSerializable("currentRoommate", roommate1);
+                                    bundle.putAll(getArguments());
+                                    addRoommateFragment.setArguments(bundle);
+                                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                                    FragmentTransaction transaction = fm.beginTransaction();
+                                    transaction.replace(R.id.fragment_create_group, addRoommateFragment);
+                                    transaction.commit();
+                                }
                             }
                         }
 

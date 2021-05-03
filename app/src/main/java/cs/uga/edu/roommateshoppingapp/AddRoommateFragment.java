@@ -110,9 +110,10 @@ public class AddRoommateFragment extends Fragment {
                     userRef.orderByChild(user.getUid()).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                            FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
-                                if(user.username.equals(username)){
-                                    if(group.getRoommate(snapshot.getKey()) == null){
+                            if(!snapshot.getKey().equals("size")){
+                                FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                                if (user.username.equals(username)) {
+                                    if (group.getRoommate(snapshot.getKey()) == null) {
                                         usernameEditText.setError(null);
                                         setFoundUser(true);
                                         Log.d(TAG, "name: " + user.name);
@@ -131,9 +132,10 @@ public class AddRoommateFragment extends Fragment {
                                         usernameEditText.setError("User is already part of group");
                                     }
 
-                                } else if(!isFoundUser()) {
+                                } else if (!isFoundUser()) {
                                     usernameEditText.setError("User was not found");
                                 }
+                            }
                         }
 
                         @Override
