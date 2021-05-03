@@ -19,8 +19,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash2);
 
-        dbConnection = new FirebaseDBConnection();
-
         createAccount = (Button) findViewById(R.id.create_account); //button for account creation
         signIn = (Button) findViewById(R.id.signIn); // button for user to sign into account
 
@@ -32,11 +30,13 @@ public class SplashActivity extends AppCompatActivity {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Roommate newRoommate = new Roommate("Twumasi", "twumasi.pennoh@gmail.com", "tkp12", "hello123");
-//                dbConnection.createNewRoommate(SplashActivity.this, newRoommate);
                 ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.second_splash, new CreateAccountFragment()).commit();
+
+//                Roommate newRoommate = new Roommate("Kwaku", "twumasi.pennoh1@gmail.com", "kwak12", "hello124");
+//                dbConnection = new FirebaseDBConnection();
+//                dbConnection.createNewRoommate(SplashActivity.this, newRoommate);
             }
         });
 
@@ -45,9 +45,8 @@ public class SplashActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.second_splash, new LoginFragment()).commit();
-//                Roommate newRoommate = new Roommate("Twumasi", "twumasi.pennoh@gmail.com", "tkp12", "hello123");
-//                dbConnection.signInRoommate(SplashActivity.this, newRoommate.getEmail(), newRoommate.getPassword());
+                LoginFragment loginFragment = new LoginFragment();
+                fragmentTransaction.replace(R.id.second_splash, loginFragment).commit();
             }
         });
     }
