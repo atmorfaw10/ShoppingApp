@@ -95,6 +95,7 @@ public class AddRoommateFragment extends Fragment {
         final FirebaseUser user = (FirebaseUser) getArguments().get("FirebaseUser");
         final RoommateGroup group = (RoommateGroup) getArguments().getSerializable("roommateGroup");
         final Roommate currentRoommate = (Roommate) getArguments().getSerializable("currentRoommate");
+        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
         final Roommate newRoommate = new Roommate();
 
         addRoommateButton.setOnClickListener(new View.OnClickListener() {

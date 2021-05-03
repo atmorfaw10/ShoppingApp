@@ -21,21 +21,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:text="Shopping List"
+            android:text="Recently Purchased List"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:translationY="30dp" />
 
-
-        <Button
-            android:id="@+id/add_to_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/white"
-            android:text="Add to List"
-            android:textColor="@color/black"
-            android:translationY="255dp" />
 
         <TextView
             android:id="@+id/list_text_view"

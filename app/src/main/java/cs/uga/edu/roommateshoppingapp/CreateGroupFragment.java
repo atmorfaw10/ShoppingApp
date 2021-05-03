@@ -139,7 +139,7 @@ public class CreateGroupFragment extends Fragment {
                             //add item to shopping list
                             groupShoppingList.addShoppingListItem(new Item(itemName));
                             //add info for shoppingList item in database
-                            dbConnection.modifyShoppingListItem(groupName, groupShoppingList.getShoppingListSize(), newItem);
+                            dbConnection.modifyShoppingListItem(getActivity(), groupName, groupShoppingList.getShoppingListSize(), newItem);
                         }
                     }
                     group.setShoppingList(groupShoppingList);

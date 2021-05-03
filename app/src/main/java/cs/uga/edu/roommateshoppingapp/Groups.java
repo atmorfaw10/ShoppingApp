@@ -26,6 +26,7 @@ public class Groups extends AppCompatActivity {
         setContentView(R.layout.activity_groups);
 
         final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
         TextView roommatesTextView = (TextView) findViewById(R.id.roommates_textview);
         RoommateGroup group;
         ArrayList<Roommate> roommates;

@@ -166,7 +166,7 @@ public class FirebaseTestingActivity extends AppCompatActivity {
                     //- purchaser
                 String groupName = "group1";
                 Item newItem = new Item("Milk", 0, false, null);
-                dbConnection.modifyShoppingListItem(groupName, 1, newItem);
+                dbConnection.modifyShoppingListItem(FirebaseTestingActivity.this, groupName, 1, newItem);
             }
         });
 
@@ -186,7 +186,7 @@ public class FirebaseTestingActivity extends AppCompatActivity {
                 roommate1.setId(user.getUid());
                 roommate1.setEmail(user.getEmail());
                 Item newItem = new Item("Milk", 5.99, true, roommate1);
-                dbConnection.modifyShoppingListItem(groupName, 1, newItem);
+                dbConnection.modifyShoppingListItem(FirebaseTestingActivity.this, groupName, 1, newItem);
             }
         });
 

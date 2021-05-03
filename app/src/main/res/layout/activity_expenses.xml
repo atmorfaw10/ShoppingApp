@@ -33,8 +33,8 @@
             android:text="Total Cost: "
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:translationX="-100dp"
-            android:translationY="-100dp" />
+            android:translationX="-126dp"
+            android:translationY="-145dp" />
 
         <TextView
             android:id="@+id/average_cost_text"
@@ -44,8 +44,8 @@
             android:text="Average Cost: "
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:translationX="-88dp"
-            android:translationY="-80dp" />
+            android:translationX="-115dp"
+            android:translationY="-87.5dp" />
 
         <TextView
             android:id="@+id/total_cost_roommate_text_view"
@@ -53,19 +53,48 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Total Cost by Roommate: "
-            android:textSize="18sp"
             android:textColor="@color/white"
-            android:translationX="-43dp"
-            android:translationY="-60dp" />
+            android:textSize="18sp"
+            android:translationY="-35dp" />
+
+        <TextView
+            android:id="@+id/total_cost_by_rmmate_view"
+            android:layout_width="300dp"
+            android:layout_height="190dp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:translationY="90dp" />
+
+        <TextView
+            android:id="@+id/average_cost_view"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:translationX="110dp"
+            android:translationY="-87.5dp" />
+
+        <TextView
+            android:id="@+id/total_cost_view"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:translationX="110dp"
+            android:translationY="-145dp" />
 
         <Button
             android:id="@+id/settle_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Settle the Cost"
             android:backgroundTint="@color/white"
-            android:textColor="@color/black"/>
+            android:text="Settle the Cost"
+            android:textColor="@color/black"
+            android:translationY="250dp" />
 
     </FrameLayout>
 

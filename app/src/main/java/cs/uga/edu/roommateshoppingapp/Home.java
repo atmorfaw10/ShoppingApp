@@ -30,6 +30,7 @@ public class Home extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         FirebaseUser user = (FirebaseUser) extras.get("FirebaseUser");
         Roommate currentRoommate = (Roommate) extras.get("currentRoommate");
+        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
 
         try {
             if (currentRoommate.getRoommateGroup() != null) {

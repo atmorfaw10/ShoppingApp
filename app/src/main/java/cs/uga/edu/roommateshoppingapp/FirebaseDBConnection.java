@@ -44,7 +44,7 @@ public class FirebaseDBConnection {
         currentUser = null;
     }
 
-    public void modifyShoppingListItem(String groupName, int listSize, Item itemToModify){
+    public void modifyShoppingListItem(Activity context, String groupName, int listSize, Item itemToModify){
         final DatabaseReference groupListRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/size");
         groupListRef.setValue(listSize);
 
@@ -60,6 +60,8 @@ public class FirebaseDBConnection {
         }
         listRef.setValue(itemsMap);
         Log.d(TAG, itemToModify.getName() + " has been modified in shopping list for " + groupName);
+        Toast.makeText(context, itemToModify.getName() + " has been modified in shopping list for " + groupName,
+                Toast.LENGTH_SHORT).show();
     }
 
     public void addRoommate(Activity context, String groupName, int groupSize, String roommateId){

@@ -61,7 +61,9 @@ public class Item implements Serializable {
 
     public void markAsPurchased(Roommate purchaser){
         this.purchased = true;
-        this.purchaser = purchaser;
+        this.purchaser = new Roommate(purchaser.getName(), purchaser.getEmail(),
+                purchaser.getUsername(), purchaser.getPassword(), purchaser.getRoommateGroup());
+        this.purchaser.setId(purchaser.getId());
     }
 
     public void removeMarkAsPurchased(){
