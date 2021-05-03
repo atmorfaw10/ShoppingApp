@@ -14,41 +14,25 @@
         android:layout_marginBottom="-2dp"
         android:background="#4facfe">
 
-        <Spinner
-            android:id="@+id/spinner_add_options"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop = "true"
-            />
 
-        <ImageButton
-            android:id="@+id/settings_image_button"
+        <ImageView
+            android:id="@+id/settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:translationX="365dp"
+            android:translationX="380dp"
             app:srcCompat="@drawable/ic_baseline_settings_24"
             tools:ignore="VectorDrawableCompat"
-            android:backgroundTint="#4facfe"/>
+            android:backgroundTint="@color/white"/>
 
-        <ImageButton
-            android:id="@+id/imageButton2"
+        <Button
+            android:id="@+id/add_group_member"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:translationX="320dp"
-            app:srcCompat="@drawable/ic_baseline_add_circle_24"
-            tools:ignore="VectorDrawableCompat"
-            android:backgroundTint="#4facfe"/>
-
-        <TextView
-            android:id="@+id/initial_home_welcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:text="Add a member"
             android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:text="Welcome Home! Please Create a Group to Get Started"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/black"
+            />
 
     </FrameLayout>
 

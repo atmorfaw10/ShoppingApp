@@ -43,11 +43,14 @@ public class CreateAccountFragment extends Fragment {
     private EditText textPassword; // password edit text view
     private EditText reEnteredPassword; // re-entered password edit text view
 
-    String emailInput; // string of inputted email
-    String passwordInput; // string of inputted password
-    String secondPasswordInput; // string of second inputted password
 
-    Button registration;
+    private String emailInput; // string of inputted email
+    private String passwordInput; // string of inputted password
+    private String secondPasswordInput; // string of second inputted password
+
+    private int counter = 0;
+
+    private Button registration;
 
     public CreateAccountFragment() {
         // Required empty public constructor
@@ -86,6 +89,7 @@ public class CreateAccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View createAccountFragment = inflater.inflate(R.layout.fragment_create_account, container,false);
 
+
         textUserName = (EditText) createAccountFragment.findViewById(R.id.user_name_text);
         textInputEmail = (EditText) createAccountFragment.findViewById(R.id.email);
         textPassword = (EditText) createAccountFragment.findViewById(R.id.pass_word);
@@ -108,7 +112,15 @@ public class CreateAccountFragment extends Fragment {
             }
         });
 
+
         return createAccountFragment;
+    }
+
+    public void onBackPressed() {
+        counter++;
+        if(counter > 0) {
+            getActivity().onBackPressed();
+        }
     }
 
     /**

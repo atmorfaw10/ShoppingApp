@@ -12,6 +12,7 @@ public class SplashActivity extends AppCompatActivity {
     private Button createAccount;
     private Button signIn;
     private FirebaseDBConnection dbConnection;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,8 @@ public class SplashActivity extends AppCompatActivity {
 
         createAccount = (Button) findViewById(R.id.create_account); //button for account creation
         signIn = (Button) findViewById(R.id.signIn); // button for user to sign into account
+
+
 
         /**
          * on click listener method for opening the fragment that takes the user to set up an account
