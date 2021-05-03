@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class List extends AppCompatActivity {
@@ -45,11 +47,17 @@ public class List extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         Button addToList = (Button) findViewById(R.id.add_to_list);
+        TextView listView = (TextView) findViewById(R.id.list_text_view);
+
+        ArrayList<Item> theItemsList = new ArrayList<Item>();
+
+
 
         addToList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(List.this, ListPop.class));
+                Intent add = new Intent(List.this, ListPop.class);
+                startActivity(add);
             }
         });
 

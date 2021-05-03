@@ -38,18 +38,18 @@ public class ListPop extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popwindow);
 
-        itemList.setVisibility(View.VISIBLE);
-        textView.setVisibility(View.INVISIBLE);
-        saveItem.setVisibility(View.INVISIBLE);
-        addButton.setVisibility(View.VISIBLE);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        saveItem = (Button) findViewById(R.id.save_list_button);
+        EditText item = (EditText) findViewById(R.id.item_name);
+        EditText price = (EditText) findViewById(R.id.item_price);
 
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
+        String item_Name = item.toString().trim();
+        int item_Price = Integer.parseInt(price.toString());
 
-        getWindow().setLayout((int) (width * .8), (int) (height * .6));
+        listItem = new Item(item_Name, item_Price);
+
+        TextView listView = (TextView) findViewById(R.id.list_text_view);
+        listView.setText("Name: " + listItem.getName() + "Price: " + listItem.getPrice());
     }
 
 
@@ -61,22 +61,22 @@ public class ListPop extends AppCompatActivity {
         item = itemName.getText().toString().trim();
         price = itemPrice.getText().toString().trim();
 
-        saveItem = (Button) findViewById(R.id.save_list_button);
+      //  saveItem = (Button) findViewById(R.id.save_list_button);
 
         addToList = (Button) shoppingListView.findViewById(R.id.save_list_button);
-        addButton = (ImageButton) findViewById(R.id.add_image_button);
+      //  addButton = (ImageButton) findViewById(R.id.add_image_button);
 
         dialogBuilder.setView(shoppingListView);
         dialog = dialogBuilder.create();
         dialog.show();
 
-        itemList = (ListView) findViewById(R.id.list_item_view);
-        textView = (TextView) findViewById(R.id.list_view_title);
+      //  itemList = (ListView) findViewById(R.id.list_item_view);
+     //   textView = (TextView) findViewById(R.id.list_view_title);
 
         addToList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemList.setVisibility(View.VISIBLE);
+               // itemList.setVisibility(View.VISIBLE);
                 textView.setVisibility(View.INVISIBLE);
                 saveItem.setVisibility(View.INVISIBLE);
                 addButton.setVisibility(View.VISIBLE);
