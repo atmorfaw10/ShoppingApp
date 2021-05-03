@@ -121,6 +121,7 @@ public class FirebaseDBConnection {
                             roommateMap.put("username", newRoommate.getUsername());
                             roommateMap.put("roommateGroup", "null");
                             usersRef.setValue(roommateMap);
+                            Log.d(TAG, "new user's data has been added to database");
 
                             sendEmailVerification(context);
                             updateCurrentUser(user);

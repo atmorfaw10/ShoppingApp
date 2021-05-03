@@ -2,9 +2,11 @@ package cs.uga.edu.roommateshoppingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -33,10 +35,6 @@ public class SplashActivity extends AppCompatActivity {
                 ((ConstraintLayout)findViewById(R.id.second_splash)).removeAllViews();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.second_splash, new CreateAccountFragment()).commit();
-
-//                Roommate newRoommate = new Roommate("Kwaku", "twumasi.pennoh1@gmail.com", "kwak12", "hello124");
-//                dbConnection = new FirebaseDBConnection();
-//                dbConnection.createNewRoommate(SplashActivity.this, newRoommate);
             }
         });
 
