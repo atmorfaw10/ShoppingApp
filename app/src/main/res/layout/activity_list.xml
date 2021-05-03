@@ -7,7 +7,7 @@
     tools:context=".Home">
 
     <FrameLayout
-        android:id="@+id/activity_container"
+        android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_navigation"
@@ -15,24 +15,44 @@
         android:background="#4facfe">
 
 
-        <ImageView
-            android:id="@+id/settings"
+        <ListView
+            android:id="@+id/list_item_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+        </ListView>
+
+        <TextView
+            android:id="@+id/list_view_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:translationX="380dp"
-            app:srcCompat="@drawable/ic_baseline_settings_24"
-            tools:ignore="VectorDrawableCompat"
-            android:backgroundTint="@color/white"/>
+            android:layout_gravity="center"
+            android:text="The List is Empty"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="visible" />
 
         <Button
-            android:id="@+id/create_group"
+            android:id="@+id/add_to_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:text="Create Group"
-            android:layout_gravity="center"
+            android:text="Add to List"
             android:textColor="@color/black"
-            />
+            android:backgroundTint="@color/white"
+            android:layout_gravity="center"
+            android:translationY="50dp"/>
+
+        <ImageButton
+            android:id="@+id/add_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#4facfe"
+            android:translationX="350dp"
+            android:translationY="600dp"
+            app:srcCompat="@drawable/ic_baseline_add_circle_24"
+            tools:ignore="VectorDrawableCompat"
+            android:visibility="invisible"/>
 
     </FrameLayout>
 
