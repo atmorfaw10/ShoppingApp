@@ -7,7 +7,7 @@
     tools:context=".Home">
 
     <FrameLayout
-        android:id="@+id/activity_container"
+        android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_navigation"
