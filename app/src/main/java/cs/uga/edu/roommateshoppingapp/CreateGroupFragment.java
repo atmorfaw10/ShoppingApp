@@ -161,9 +161,9 @@ public class CreateGroupFragment extends Fragment {
                                 roommate1.setName(user.name);
                                 roommate1.setEmail(user.email);
                                 roommate1.setUsername(user.username);
-                                roommate1.setRoommateGroup(group);
                                 //add roommate to RoommateGroup object
                                 group.addRoommate(roommate1);
+                                roommate1.setRoommateGroup(group);
                                 //add roommate to group info in database
                                 dbConnection.createRoommateGroup(getActivity(), group);
 
@@ -171,6 +171,7 @@ public class CreateGroupFragment extends Fragment {
                                 AddRoommateFragment addRoommateFragment = new AddRoommateFragment();
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("roommateGroup", group);
+                                bundle.putSerializable("currentRoommate", roommate1);
                                 bundle.putAll(getArguments());
                                 addRoommateFragment.setArguments(bundle);
                                 FragmentManager fm = getActivity().getSupportFragmentManager();

@@ -134,7 +134,7 @@ public class FirebaseTestingActivity extends AppCompatActivity {
                 String newRoommateId = user.getUid();
                 //3. You need to know how many people are already in the group
                 //You will have the roommate object of the group so you can use that
-                dbConnection.addRoommate(groupName, 1, newRoommateId);
+                dbConnection.addRoommate(FirebaseTestingActivity.this, groupName, 1, newRoommateId);
             }
         });
 

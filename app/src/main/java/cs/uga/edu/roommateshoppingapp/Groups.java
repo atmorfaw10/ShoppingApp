@@ -2,13 +2,20 @@ package cs.uga.edu.roommateshoppingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
 
 public class Groups extends AppCompatActivity {
 
@@ -16,6 +23,34 @@ public class Groups extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
+
+        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        TextView roommatesTextView = (TextView) findViewById(R.id.roommates_textview);
+        RoommateGroup group = currentRoommate.getRoommateGroup();
+        ArrayList<Roommate> roommates = group.getRoommates();
+        String roommateText = "";
+        for(int i = 0; i < roommates.size(); i++){
+            roommateText = roommateText + "\n" + (i+1) + ". " + roommates.get(i).getName() + ", Username: " + roommates.get(i).getUsername();
+        }
+        roommatesTextView.setText(roommateText);
+
+        Button addRoommateButton = (Button) findViewById(R.id.add_group_roommate);
+        addRoommateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //continue to next page
+                AddRoommateFragment addRoommateFragment = new AddRoommateFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("roommateGroup", group);
+                bundle.putSerializable("currentRoommate", currentRoommate);
+                bundle.putAll(getIntent().getExtras());
+                addRoommateFragment.setArguments(bundle);
+                FragmentManager fm = Groups.this.getSupportFragmentManager();
+                FragmentTransaction transaction = fm.beginTransaction();
+                transaction.replace(R.id.view_group, addRoommateFragment);
+                transaction.commit();
+            }
+        });
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);

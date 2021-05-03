@@ -45,10 +45,10 @@ public class FirebaseDBConnection {
     }
 
     public void modifyShoppingListItem(String groupName, int listSize, Item itemToModify){
-        final DatabaseReference groupListRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName + "/size");
+        final DatabaseReference groupListRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/size");
         groupListRef.setValue(listSize);
 
-        final DatabaseReference listRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName + "/" + itemToModify.getName());
+        final DatabaseReference listRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/" + itemToModify.getName());
         Map<String, String> itemsMap = new HashMap<>();
         itemsMap.put("purchased", Boolean.toString(itemToModify.isPurchased()));
         itemsMap.put("price", Double.toString(itemToModify.getPrice()));
@@ -62,7 +62,7 @@ public class FirebaseDBConnection {
         Log.d(TAG, itemToModify.getName() + " has been modified in shopping list for " + groupName);
     }
 
-    public void addRoommate(String groupName, int groupSize, String roommateId){
+    public void addRoommate(Activity context, String groupName, int groupSize, String roommateId){
         final DatabaseReference userGroupRef = FirebaseDatabase.getInstance().getReference("users/" + roommateId + "/" + "roommateGroup");
         userGroupRef.setValue(groupName);
         Log.d(TAG, "Added group name to user data");
@@ -74,6 +74,9 @@ public class FirebaseDBConnection {
         final DatabaseReference sizeRef = FirebaseDatabase.getInstance().getReference("roommateGroups/" + groupName + "/size");
         sizeRef.setValue(groupSize);
         Log.d(TAG, "Group size has been increased");
+
+        Toast.makeText(context, "Roommate has been added to the group",
+                Toast.LENGTH_SHORT).show();
     }
 
     public void createRoommateGroup(Activity context, RoommateGroup group){
@@ -97,7 +100,7 @@ public class FirebaseDBConnection {
     }
 
     public void createShoppingList(String groupName){
-        DatabaseReference ref = database.getReference("/shoppingList/" + groupName + "/size");
+        DatabaseReference ref = database.getReference("/shoppingLists/" + groupName + "/size");
         ref.setValue(0);
         Log.d(TAG, "Shopping List for " + groupName + " has been created.");
     }
@@ -226,12 +229,12 @@ public class FirebaseDBConnection {
                                                                                 group.addRoommate(roommate1);
                                                                                 if(group.getRoommates().size() == size){
                                                                                     ShoppingList list = new ShoppingList();
-                                                                                    final DatabaseReference listSizeRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName + "/size");
+                                                                                    final DatabaseReference listSizeRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/size");
                                                                                     listSizeRef.addValueEventListener(new ValueEventListener() {
                                                                                         @Override
                                                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                                                             final long shoppingListSize = (long) snapshot.getValue();
-                                                                                            final DatabaseReference itemRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName);
+                                                                                            final DatabaseReference itemRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName);
                                                                                             itemRef.addChildEventListener(new ChildEventListener() {
                                                                                                 @Override
                                                                                                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {

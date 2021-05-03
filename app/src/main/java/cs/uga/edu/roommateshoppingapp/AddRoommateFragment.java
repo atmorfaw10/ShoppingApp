@@ -97,6 +97,8 @@ public class AddRoommateFragment extends Fragment {
 
         final FirebaseUser user = (FirebaseUser) getArguments().get("FirebaseUser");
         final RoommateGroup group = (RoommateGroup) getArguments().getSerializable("roommateGroup");
+        final Roommate currentRoommate = (Roommate) getArguments().getSerializable("currentRoommate");
+        final Roommate newRoommate = new Roommate();
 
         addRoommateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +108,6 @@ public class AddRoommateFragment extends Fragment {
                 if (username.equals("")) {
                     usernameEditText.setError("Field cannot be empty");
                 } else {
-                    Roommate newRoommate = new Roommate();
                     //check in database if username is available
                     final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
                     userRef.orderByChild(user.getUid()).addChildEventListener(new ChildEventListener() {
@@ -123,9 +124,10 @@ public class AddRoommateFragment extends Fragment {
                                     newRoommate.setName(user.name);
                                     newRoommate.setEmail(user.email);
                                     newRoommate.setUsername(user.username);
-
                                     group.addRoommate(newRoommate);
-                                    dbConnection.addRoommate(group.getGroupName(), group.getRoommates().size(), newRoommate.getId());
+                                    newRoommate.setRoommateGroup(group);
+
+                                    dbConnection.addRoommate(getActivity(), group.getGroupName(), group.getRoommates().size(), newRoommate.getId());
                                 } else if(!isFoundUser()) {
                                     usernameEditText.setError("User was not found");
                                 }
@@ -185,6 +187,7 @@ public class AddRoommateFragment extends Fragment {
                             selectedIntent = new Intent(getActivity(), Expenses.class);
                     }
                     selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getArguments().get("FirebaseUser"));
+                    selectedIntent.putExtra("currentRoommate", (Roommate) getArguments().getSerializable("currentRoommate"));
                     startActivity(selectedIntent);
                     return true;
                 }
