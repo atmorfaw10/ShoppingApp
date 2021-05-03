@@ -22,9 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AddRoommateFragment#newInstance} factory method to
@@ -87,8 +84,8 @@ public class AddRoommateFragment extends Fragment {
         // Inflate the layout for this fragment
         View addRoommateFragment = inflater.inflate(R.layout.fragment_add_roommate,container,false);
 
-        final EditText usernameEditText = (EditText) addRoommateFragment.findViewById(R.id.username_edit_text);
-        addRoommateButton = (Button) addRoommateFragment.findViewById(R.id.add_roommate_button);
+        final EditText usernameEditText = (EditText) addRoommateFragment.findViewById(R.id.price_purchased);
+        addRoommateButton = (Button) addRoommateFragment.findViewById(R.id.modify_item_button);
 
         BottomNavigationView bottomNav = (BottomNavigationView) addRoommateFragment.findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -115,19 +112,25 @@ public class AddRoommateFragment extends Fragment {
                         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                             FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
                                 if(user.username.equals(username)){
-                                    usernameEditText.setError(null);
-                                    setFoundUser(true);
-                                    Log.d(TAG, "name: " + user.name);
-                                    Log.d(TAG, "email: " + user.email);
-                                    Log.d(TAG, "username: " + user.username);
-                                    newRoommate.setId(snapshot.getKey());
-                                    newRoommate.setName(user.name);
-                                    newRoommate.setEmail(user.email);
-                                    newRoommate.setUsername(user.username);
-                                    group.addRoommate(newRoommate);
-                                    newRoommate.setRoommateGroup(group);
+                                    if(group.getRoommate(snapshot.getKey()) == null){
+                                        usernameEditText.setError(null);
+                                        setFoundUser(true);
+                                        Log.d(TAG, "name: " + user.name);
+                                        Log.d(TAG, "email: " + user.email);
+                                        Log.d(TAG, "username: " + user.username);
+                                        newRoommate.setId(snapshot.getKey());
+                                        newRoommate.setName(user.name);
+                                        newRoommate.setEmail(user.email);
+                                        newRoommate.setUsername(user.username);
+                                        group.addRoommate(newRoommate);
+                                        newRoommate.setRoommateGroup(group);
 
-                                    dbConnection.addRoommate(getActivity(), group.getGroupName(), group.getRoommates().size(), newRoommate.getId());
+                                        dbConnection.addRoommate(getActivity(), group.getGroupName(), group.getRoommates().size(), newRoommate.getId());
+                                    } else {
+                                        setFoundUser(true);
+                                        usernameEditText.setError("User is already part of group");
+                                    }
+
                                 } else if(!isFoundUser()) {
                                     usernameEditText.setError("User was not found");
                                 }
