@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoommateShoppingApp">
-        <activity android:name=".ListPop"></activity>
+        <activity android:name=".ListPop" android:theme="@style/CustomTheme"></activity>
         <activity android:name=".Expenses" />
         <activity android:name=".List" />
         <activity android:name=".Groups" />

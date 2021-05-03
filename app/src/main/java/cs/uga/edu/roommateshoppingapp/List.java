@@ -36,6 +36,8 @@ public class List extends AppCompatActivity {
     private ListView itemList;
     private TextView textView;
     private ArrayAdapter arrayAdapter;
+    private Button saveItem;
+    private ImageButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class List extends AppCompatActivity {
         addToList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               startActivity(new Intent(List.this, ListPop.class));
+                startActivity(new Intent(List.this, ListPop.class));
             }
         });
 

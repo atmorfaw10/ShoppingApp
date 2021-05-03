@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,19 @@ public class ListPop extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popwindow);
-        createNewDialoge();
+
+        itemList.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.INVISIBLE);
+        saveItem.setVisibility(View.INVISIBLE);
+        addButton.setVisibility(View.VISIBLE);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
+
+        getWindow().setLayout((int) (width * .8), (int) (height * .6));
     }
 
 
@@ -74,12 +87,14 @@ public class ListPop extends AppCompatActivity {
                 arrayAdapter = new ArrayAdapter(ListPop.this, android.R.layout.simple_list_item_1);
                 itemList.setAdapter(arrayAdapter);
 
+                /*
                 itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(ListPop.this, "clicked item: " + position + theItems.get(position).toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
+                 */
             }
         });
     }
