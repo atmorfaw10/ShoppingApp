@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ListPop extends AppCompatActivity {
@@ -38,22 +39,34 @@ public class ListPop extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popwindow);
 
+        FirebaseDBConnection dbConnection = new FirebaseDBConnection();
+
+        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        RoommateGroup group = currentRoommate.getRoommateGroup();
+        ArrayList<Roommate> roommates = group.getRoommates();
+        ShoppingList shoppingList = group.getShoppingList();
+        ArrayList<Item> shoppingListArrayList = shoppingList.getShoppingListItems();
 
         saveItem = (Button) findViewById(R.id.save_list_button);
         EditText item = (EditText) findViewById(R.id.item_name);
         EditText price = (EditText) findViewById(R.id.item_price);
 
-        String item_Name = item.toString().trim();
-        int item_Price = Integer.parseInt(price.toString());
+       saveItem.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               String item_Name = item.toString().trim();
+               double item_Price = Double.parseDouble(price.getText().toString());
+               listItem = new Item(item_Name, item_Price);
+               listItem.markAsPurchased(currentRoommate);
+               shoppingList.addShoppingListItem(listItem);
 
-        listItem = new Item(item_Name, item_Price);
-
-        TextView listView = (TextView) findViewById(R.id.list_text_view);
-        listView.setText("Name: " + listItem.getName() + "Price: " + listItem.getPrice());
+               dbConnection.modifyShoppingListItem(group.getGroupName(), shoppingList.getShoppingListSize(), listItem);
+           }
+       });
     }
 
 
-    public void createNewDialoge() {
+    public void createNewDialogue() {
         dialogBuilder = new AlertDialog.Builder(this);
         final View shoppingListView = getLayoutInflater().inflate(R.layout.popwindow, null);
         itemName = (EditText) shoppingListView.findViewById(R.id.item_name);

@@ -3,6 +3,8 @@ package cs.uga.edu.roommateshoppingapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,17 +51,42 @@ public class List extends AppCompatActivity {
         Button addToList = (Button) findViewById(R.id.add_to_list);
         TextView listView = (TextView) findViewById(R.id.list_text_view);
 
-        ArrayList<Item> theItemsList = new ArrayList<Item>();
-
-
-
-        addToList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent add = new Intent(List.this, ListPop.class);
-                startActivity(add);
+        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        RoommateGroup group;
+        ArrayList<Roommate> roommates;
+        ShoppingList shoppingList;
+        ArrayList<Item> shoppingListArrayList;
+        try{
+            group = currentRoommate.getRoommateGroup();
+            roommates = group.getRoommates();
+            shoppingList = group.getShoppingList();
+            shoppingListArrayList = shoppingList.getShoppingListItems();
+            String listText = "";
+            for(int i = 0; i < shoppingListArrayList.size(); i++){
+                listText = listText + "\n\n" + (i+1) + ". " + shoppingListArrayList.get(i).getName() + "\n Price: "
+                        + shoppingListArrayList.get(i).getPrice() + "\n Purchased: " + shoppingListArrayList.get(i).isPurchased();
             }
-        });
+            listView.setText(listText);
+            addToList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent add = new Intent(List.this, ListPop.class);
+                    add.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    add.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    startActivity(add);
+                }
+            });
+        } catch (NullPointerException e){
+            listView.setText("");
+            addToList = (Button) findViewById(R.id.add_group_roommate);
+            addToList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(List.this, "You must join or create a group",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
