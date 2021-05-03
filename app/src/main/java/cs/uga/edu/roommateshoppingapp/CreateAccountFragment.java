@@ -3,14 +3,24 @@ package cs.uga.edu.roommateshoppingapp;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.regex.Pattern;
 
@@ -53,6 +63,8 @@ public class CreateAccountFragment extends Fragment {
     String secondPasswordInput; // string of second inputted password
 
     private int counter = 0;
+
+    private long numUsers = 0;
 
     private Button registration;
 
@@ -106,8 +118,49 @@ public class CreateAccountFragment extends Fragment {
             public void onClick(View v) {
                 if(validateName() && validateUserName() && validateEmail() && validatePassword() && confirmPassword())
                 {
-                    Roommate newRoommate = new Roommate(textInputEmail.getText().toString(), textPassword.getText().toString());
-                    dbConnection.createNewRoommate(getActivity(), newRoommate);
+                    //check in database if username is available
+                    DatabaseReference sizeRef = FirebaseDatabase.getInstance().getReference("/users/size");
+                    sizeRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long size = (long) snapshot.getValue();
+                            final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                            userRef.orderByKey().addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    increaseNumUsers();
+                                    FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                                    if(user.username.equals(usernameInput)) {
+                                        textUserName.setError("Username has been taken. Try a different username");
+                                    } else if(getNumUsers() == size){
+                                        Roommate newRoommate = new Roommate(textInputEmail.getText().toString(), textPassword.getText().toString());
+                                        dbConnection.createNewRoommate(getActivity(), newRoommate);
+                                    }
+                                }
+
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                }
+
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                                }
+
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 } else {
                     // do nothing
                 }
@@ -116,6 +169,15 @@ public class CreateAccountFragment extends Fragment {
 
 
         return createAccountFragment;
+    }
+
+
+    public long getNumUsers(){
+        return numUsers;
+    }
+
+    public void increaseNumUsers(){
+        this.numUsers += 1;
     }
 
     public void onBackPressed() {
