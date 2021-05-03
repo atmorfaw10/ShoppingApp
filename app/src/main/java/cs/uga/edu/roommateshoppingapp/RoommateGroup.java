@@ -1,9 +1,10 @@
 package cs.uga.edu.roommateshoppingapp;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class RoommateGroup {
+public class RoommateGroup implements Serializable {
 
     private String groupName;
     private ArrayList<Roommate> roommates;

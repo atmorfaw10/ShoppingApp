@@ -2,16 +2,21 @@ package cs.uga.edu.roommateshoppingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.content.Context;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -30,8 +35,25 @@ public class Home extends AppCompatActivity {
 
         ImageButton settings;
 
-        Button createGroup = (Button) findViewById(R.id.create_group);
+        //Button createGroup = (Button) findViewById(R.id.create_group);
 
+        Bundle extras = getIntent().getExtras();
+        //FirebaseUser user = (FirebaseUser) extras.get("FirebaseUser");
+
+        ImageButton createGroupButton = (ImageButton) findViewById(R.id.imageButton2);
+        /**
+         * on click listener method for opening the fragment that takes the user to create a group
+         */
+        createGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((RelativeLayout)findViewById(R.id.activity_home)).removeAllViews();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                CreateGroupFragment groupFragment = new CreateGroupFragment();
+                groupFragment.setArguments(extras);
+                fragmentTransaction.replace(R.id.activity_home, groupFragment).commit();
+            }
+        });
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
