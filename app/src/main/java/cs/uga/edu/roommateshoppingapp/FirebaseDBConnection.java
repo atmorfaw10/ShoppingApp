@@ -60,7 +60,6 @@ public class FirebaseDBConnection {
     }
 
     public void addRoommate(String groupName, int groupSize, String roommateId){
-        groupSize += 1;
         final DatabaseReference userGroupRef = FirebaseDatabase.getInstance().getReference("users/" + roommateId + "/" + "roommateGroup");
         userGroupRef.setValue(groupName);
         Log.d(TAG, "Added group name to user data");
@@ -84,16 +83,18 @@ public class FirebaseDBConnection {
         if(roommates.size() == 1){
             DatabaseReference rmGroupRef = ref.child("roommates");
             Map<String, String> roommateGroupsMap = new HashMap<>();
-            for(int i = 0; i < numOfRoommates; i++){
-                roommateGroupsMap.put("Roommate" + (i+1), roommates.get(i).getId());
-            }
+            roommateGroupsMap.put("Roommate1", roommates.get(0).getId());
             rmGroupRef.setValue(roommateGroupsMap);
             Log.d(TAG, "Roommate Group " + group.getGroupName() + " added to db");
+
+            final DatabaseReference userGroupRef = FirebaseDatabase.getInstance().getReference("users/" + roommates.get(0).getId() + "/" + "roommateGroup");
+            userGroupRef.setValue(group.getGroupName());
+            Log.d(TAG, "Added group name to user data");
         } //else
     }
 
     public void createShoppingList(String groupName){
-        DatabaseReference ref = database.getReference("/shoppingLists/" + groupName + "/size");
+        DatabaseReference ref = database.getReference("/shoppingList/" + groupName + "/size");
         ref.setValue(0);
         Log.d(TAG, "Shopping List for " + groupName + " has been created.");
     }
@@ -121,6 +122,7 @@ public class FirebaseDBConnection {
                             roommateMap.put("username", newRoommate.getUsername());
                             roommateMap.put("roommateGroup", "null");
                             usersRef.setValue(roommateMap);
+                            Log.d(TAG, "new user's data has been added to database");
 
                             sendEmailVerification(context);
                             updateCurrentUser(user);
@@ -154,17 +156,17 @@ public class FirebaseDBConnection {
                             updateCurrentUser(user);
 
                             // Home class
-//                            Intent home = new Intent();
-//                            home.setClass(context, Home.class);
-//                            home.putExtra("FirebaseUser", user);
+                            Intent home = new Intent();
+                            home.setClass(context, Home.class);
+                            home.putExtra("FirebaseUser", user);
 
-                            // FirebaseTestingActivity class
-                            Intent firebaseTesting = new Intent();
-                            firebaseTesting.setClass(context, FirebaseTestingActivity.class);
-                            firebaseTesting.putExtra("FirebaseUser", user);
+//                            // FirebaseTestingActivity class
+//                            Intent firebaseTesting = new Intent();
+//                            firebaseTesting.setClass(context, FirebaseTestingActivity.class);
+//                            firebaseTesting.putExtra("FirebaseUser", user);
+//                            context.startActivity(firebaseTesting);
 
-                            context.startActivity(firebaseTesting);
-//                            context.startActivity(home);
+                            context.startActivity(home);
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(context, "Authentication failed. Please try again",

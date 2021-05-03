@@ -24,7 +24,7 @@ public class CreateAccountFragment extends Fragment {
             "(?=.*[0-9])" +  // at least 1 digit
             "(?=.*[a-z])" +  // at least 1 lower case letter
             "(?=.*[A-Z])" +  // at least 1 upper case letter
-            "(?=.*[@#$%^&+=])" + // at least 1 special character
+            "(?=.*[@#$%^&+=!])" + // at least 1 special character
             "(?=\\S+$)" + // no white spaces
             ".{6,}" + // at least 6 characters
             "$");
@@ -197,7 +197,8 @@ public class CreateAccountFragment extends Fragment {
             return false;
         } else if (!PASSWORD_PATTERN.matcher(passwordInput).matches())
         {
-            textPassword.setError("Password to weak");
+            textPassword.setError("Password too weak. It must be at least 6 characters long, contain 1" +
+                    " digit, 1 lower case letter, 1 uppercase letter, and 1 special character");
             return false;
         } else
         {

@@ -2,7 +2,7 @@ package cs.uga.edu.roommateshoppingapp;
 
 import java.io.Serializable;
 
-public class Roommate {
+public class Roommate implements Serializable{
 
     private String name;
     private String email;

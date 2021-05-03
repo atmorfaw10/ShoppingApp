@@ -1,8 +1,9 @@
 package cs.uga.edu.roommateshoppingapp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ShoppingList {
+public class ShoppingList implements Serializable {
     private ArrayList<Item> shoppingListItems;
 
     ShoppingList() {
