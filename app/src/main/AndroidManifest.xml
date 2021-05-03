@@ -9,12 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoommateShoppingApp">
-        <activity android:name=".Expenses"></activity>
+        <activity android:name=".ListPop"></activity>
+        <activity android:name=".Expenses" />
         <activity android:name=".List" />
-        <activity android:name=".listPop" android:theme="@style/CustomTheme"/>
         <activity android:name=".Groups" />
         <activity android:name=".Home" />
-        <activity android:name=".FirebaseTestingActivity"></activity>
+        <activity android:name=".FirebaseTestingActivity" />
         <activity android:name=".SplashActivity2" />
         <activity android:name=".SplashActivity" />
         <activity android:name=".MainActivity">

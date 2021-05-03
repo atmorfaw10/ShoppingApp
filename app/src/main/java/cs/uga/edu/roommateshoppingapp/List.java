@@ -1,17 +1,40 @@
 package cs.uga.edu.roommateshoppingapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+
 public class List extends AppCompatActivity {
+
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+    private EditText itemName, itemPrice;
+    private Button addToList;
+    private String item;
+    private int price;
+    private Item listItem;
+    private Item[] itemsList;
+    private ArrayList<Item> theItems = new ArrayList<Item>();
+    private ListView itemList;
+    private TextView textView;
+    private ArrayAdapter arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +46,7 @@ public class List extends AppCompatActivity {
         addToList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(List.this, listPop.class));
+               startActivity(new Intent(List.this, ListPop.class));
             }
         });
 
@@ -57,4 +80,5 @@ public class List extends AppCompatActivity {
                     return true;
                 }
             };
+
 }
