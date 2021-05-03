@@ -27,36 +27,74 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        initList();
-        Spinner spinnerFeatures = findViewById(R.id.spinner_add_options);
-        // = new featureAdapter(this, addFeaturesList);
-
-        ImageButton settings;
-
-        //Button createGroup = (Button) findViewById(R.id.create_group);
-
         Bundle extras = getIntent().getExtras();
-        //FirebaseUser user = (FirebaseUser) extras.get("FirebaseUser");
+        FirebaseUser user = (FirebaseUser) extras.get("FirebaseUser");
+        Roommate currentRoommate = (Roommate) extras.get("currentRoommate");
 
-        ImageButton createGroupButton = (ImageButton) findViewById(R.id.imageButton2);
-        /**
-         * on click listener method for opening the fragment that takes the user to create a group
-         */
-        createGroupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((RelativeLayout)findViewById(R.id.activity_home)).removeAllViews();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                CreateGroupFragment groupFragment = new CreateGroupFragment();
-                groupFragment.setArguments(extras);
-                fragmentTransaction.replace(R.id.activity_home, groupFragment).commit();
+        try {
+            if (currentRoommate.getRoommateGroup() != null) {
+                initList();
+                setContentView(R.layout.activity_home2);
+                Button modifyListButton = (Button) findViewById(R.id.modify_list);
+                modifyListButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent selectedIntent = new Intent(Home.this, List.class);
+                        selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                        selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                        startActivity(selectedIntent);
+                    }
+                });
+
+                Button addRoommatesButton = (Button) findViewById(R.id.add_roommates);
+                addRoommatesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent selectedIntent = new Intent(Home.this, Groups.class);
+                        selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                        selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                        startActivity(selectedIntent);
+                    }
+                });
+
+                Button viewExpensesButton = (Button) findViewById(R.id.view_expenses);
+                viewExpensesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent selectedIntent = new Intent(Home.this, Expenses.class);
+                        selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                        selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                        startActivity(selectedIntent);
+                    }
+                });
+
+                BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+                bottomNav.setOnNavigationItemSelectedListener(navListener);
             }
-        });
+        } catch (NullPointerException e) {
+            setContentView(R.layout.activity_home);
+            initList();
+            ImageButton settings;
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+            ImageButton createGroupButton = (ImageButton) findViewById(R.id.imageButton2);
+            /**
+             * on click listener method for opening the fragment that takes the user to create a group
+             */
+            createGroupButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((RelativeLayout) findViewById(R.id.activity_home)).removeAllViews();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    CreateGroupFragment groupFragment = new CreateGroupFragment();
+                    groupFragment.setArguments(extras);
+                    fragmentTransaction.replace(R.id.activity_home, groupFragment).commit();
+                }
+            });
+
+            BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+            bottomNav.setOnNavigationItemSelectedListener(navListener);
+        }
     }
 
     private void initList() {
@@ -88,7 +126,9 @@ public class Home extends AppCompatActivity {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(Home.this, Expenses.class);
                     }
-                         startActivity(selectedIntent);
+                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    startActivity(selectedIntent);
                     return true;
                 }
             };

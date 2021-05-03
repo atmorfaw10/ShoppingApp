@@ -1,8 +1,10 @@
 package cs.uga.edu.roommateshoppingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -87,9 +90,12 @@ public class AddRoommateFragment extends Fragment {
         final EditText usernameEditText = (EditText) addRoommateFragment.findViewById(R.id.username_edit_text);
         addRoommateButton = (Button) addRoommateFragment.findViewById(R.id.add_roommate_button);
 
+        BottomNavigationView bottomNav = (BottomNavigationView) addRoommateFragment.findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
         dbConnection = new FirebaseDBConnection();
 
-        final FirebaseUser currentUser = (FirebaseUser) getArguments().get("FirebaseUser");
+        final FirebaseUser user = (FirebaseUser) getArguments().get("FirebaseUser");
         final RoommateGroup group = (RoommateGroup) getArguments().getSerializable("roommateGroup");
 
         addRoommateButton.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +109,7 @@ public class AddRoommateFragment extends Fragment {
                     Roommate newRoommate = new Roommate();
                     //check in database if username is available
                     final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
-                    userRef.orderByChild(currentUser.getUid()).addChildEventListener(new ChildEventListener() {
+                    userRef.orderByChild(user.getUid()).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                             FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
@@ -155,4 +161,32 @@ public class AddRoommateFragment extends Fragment {
     public boolean isFoundUser(){
         return this.foundUser;
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Intent selectedIntent = null;
+                    switch(item.getItemId())
+                    {
+                        case R.id.nav_home:
+                            selectedIntent = new Intent(getActivity(), Home.class);
+                            break;
+
+                        case R.id.nav_groups:
+                            selectedIntent = new Intent(getActivity(), Groups.class);
+                            break;
+
+                        case R.id.nav_shopping_list:
+                            selectedIntent = new Intent(getActivity(), List.class);
+                            break;
+
+                        case R.id.nav_expenses:
+                            selectedIntent = new Intent(getActivity(), Expenses.class);
+                    }
+                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getArguments().get("FirebaseUser"));
+                    startActivity(selectedIntent);
+                    return true;
+                }
+            };
 }

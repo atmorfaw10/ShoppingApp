@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Home"
+    android:id="@+id/activity_home">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_marginBottom="-2dp"
+        android:background="#4facfe">
+
+        <TextView
+            android:id="@+id/initial_home_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="Welcome Home!"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:translationY="-20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.109" />
+
+        <LinearLayout
+            android:layout_width="379dp"
+            android:layout_height="150dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.466"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/initial_home_welcome"
+            app:layout_constraintVertical_bias="0.211">
+
+            <Button
+                android:id="@+id/modify_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Modify Shopping List" />
+
+            <Button
+                android:id="@+id/add_roommates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Roommates" />
+
+            <Button
+                android:id="@+id/view_expenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View Expenses" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation"/>
+
+</RelativeLayout>

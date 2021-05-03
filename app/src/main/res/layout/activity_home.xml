@@ -15,30 +15,28 @@
         android:layout_marginBottom="-2dp"
         android:background="#4facfe">
 
-        <Spinner
-            android:id="@+id/spinner_add_options"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop = "true"
-            />
-
-        <ImageButton
-            android:id="@+id/settings_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:translationX="365dp"
-            app:srcCompat="@drawable/ic_baseline_settings_24"
-            tools:ignore="VectorDrawableCompat"
-            android:backgroundTint="#4facfe"/>
-
         <ImageButton
             android:id="@+id/imageButton2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:translationX="320dp"
+            android:layout_gravity="center"
+            android:backgroundTint="#4facfe"
+            android:translationY="50dp"
             app:srcCompat="@drawable/ic_baseline_add_circle_24"
-            tools:ignore="VectorDrawableCompat"
-            android:backgroundTint="#4facfe"/>
+            tools:ignore="VectorDrawableCompat" />
+
+        <TextView
+            android:id="@+id/initial_home_welcome2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="Please Create or Join a Group to Get Started!"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:translationX="10dp"
+            android:translationY="10dp" />
 
         <TextView
             android:id="@+id/initial_home_welcome"
@@ -46,10 +44,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif-medium"
-            android:textAlignment="center"
             android:gravity="center"
-            android:text="Welcome Home! Please Create a Group to Get Started"
-            android:textColor="#FFFFFF" />
+            android:text="Welcome Home!"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:translationY="-20dp" />
 
     </FrameLayout>
 

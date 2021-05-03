@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -120,17 +123,18 @@ public class FirebaseDBConnection {
                             roommateMap.put("name", newRoommate.getName());
                             roommateMap.put("email", newRoommate.getEmail());
                             roommateMap.put("username", newRoommate.getUsername());
-                            roommateMap.put("roommateGroup", "null");
+                            roommateMap.put("roommateGroup", "");
                             usersRef.setValue(roommateMap);
                             Log.d(TAG, "new user's data has been added to database");
 
                             sendEmailVerification(context);
                             updateCurrentUser(user);
 
+                            // Home class
                             Intent home = new Intent();
                             home.setClass(context, Home.class);
-                            home.putExtra("FirebaseUser", user);
-
+                            home.putExtra("FirebaseUser", mAuth.getCurrentUser());
+                            home.putExtra("currentRoommate", newRoommate);
                             context.startActivity(home);
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -153,20 +157,184 @@ public class FirebaseDBConnection {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            final String key = user.getUid();
                             updateCurrentUser(user);
 
-                            // Home class
-                            Intent home = new Intent();
-                            home.setClass(context, Home.class);
-                            home.putExtra("FirebaseUser", user);
+                            //get firebase user's data
+                            final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                            userRef.orderByChild(key).addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                                    if(snapshot.getKey().equals(key)){
+                                        final Roommate currentRoommate = new Roommate();
+                                        Log.d(TAG, "name: " + user.name);
+                                        Log.d(TAG, "email: " + user.email);
+                                        Log.d(TAG, "username: " + user.username);
+                                        Log.d(TAG, "roommateGroup: " + user.roommateGroup);
+                                        currentRoommate.setName(user.name);
+                                        currentRoommate.setEmail(user.email);
+                                        currentRoommate.setUsername(user.username);
 
-//                            // FirebaseTestingActivity class
-//                            Intent firebaseTesting = new Intent();
-//                            firebaseTesting.setClass(context, FirebaseTestingActivity.class);
-//                            firebaseTesting.putExtra("FirebaseUser", user);
-//                            context.startActivity(firebaseTesting);
+                                        if(user.roommateGroup.equals("")){
+                                            // Home class
+                                            Intent home = new Intent();
+                                            home.setClass(context, Home.class);
+                                            home.putExtra("FirebaseUser", mAuth.getCurrentUser());
+                                            Bundle bundle = new Bundle();
+                                            bundle.putSerializable("currentRoommate", currentRoommate);
+                                            home.putExtra("bundle", bundle);
+                                            context.startActivity(home);
+                                        } else {
+                                            String groupName = user.roommateGroup;
+                                            final RoommateGroup group = new RoommateGroup();
+                                            group.setGroupName(groupName);
+                                            final DatabaseReference sizeRef = FirebaseDatabase.getInstance().getReference("roommateGroups/" + groupName + "/size");
+                                            sizeRef.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    final long size = (long) snapshot.getValue();
+                                                    Log.d(TAG, "Size of " + groupName + " is " + size);
+                                                    final DatabaseReference roommatesRef = FirebaseDatabase.getInstance().getReference("roommateGroups/" + groupName + "/roommates");
+                                                    final ArrayList<String> roommateIds = new ArrayList<>();
+                                                    roommatesRef.addChildEventListener(new ChildEventListener() {
+                                                        @Override
+                                                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                                            roommateIds.add((String) snapshot.getValue());
+                                                            Log.d(TAG, "roommate Id " + snapshot.getValue() + " has been added");
 
-                            context.startActivity(home);
+                                                            if(roommateIds.size() == size){
+                                                                //get each roommates information
+                                                                for(int i = 0; i < roommateIds.size(); i++){
+                                                                    final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                                                                    final String key = roommateIds.get(i);
+                                                                    userRef.orderByChild(roommateIds.get(i)).addChildEventListener(new ChildEventListener() {
+                                                                        @Override
+                                                                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                                                            if(snapshot.getKey().equalsIgnoreCase(key)){
+                                                                                Log.d(TAG, "roommate " + snapshot.getKey() + " has been retrieved");
+                                                                                FirebaseTestingActivity.User user = snapshot.getValue(FirebaseTestingActivity.User.class);
+                                                                                Log.d(TAG, "name: " + user.name);
+                                                                                Log.d(TAG, "email: " + user.email);
+                                                                                Log.d(TAG, "username: " + user.username);
+                                                                                Roommate roommate1 = new Roommate();
+                                                                                roommate1.setId(key);
+                                                                                roommate1.setName(user.name);
+                                                                                roommate1.setEmail(user.email);
+                                                                                roommate1.setUsername(user.username);
+                                                                                roommate1.setRoommateGroup(group);
+                                                                                group.addRoommate(roommate1);
+                                                                                if(group.getRoommates().size() == size){
+                                                                                    ShoppingList list = new ShoppingList();
+                                                                                    final DatabaseReference listSizeRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName + "/size");
+                                                                                    listSizeRef.addValueEventListener(new ValueEventListener() {
+                                                                                        @Override
+                                                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                                            final long shoppingListSize = (long) snapshot.getValue();
+                                                                                            final DatabaseReference itemRef = FirebaseDatabase.getInstance().getReference("shoppingList/" + groupName);
+                                                                                            itemRef.addChildEventListener(new ChildEventListener() {
+                                                                                                @Override
+                                                                                                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                                                                                    if(!snapshot.getKey().equals("size")){
+                                                                                                        Log.d(TAG, "Shopping List item " + snapshot.getKey() + " has been retrieved");
+                                                                                                        FirebaseTestingActivity.ShoppingListItem item = snapshot.getValue(FirebaseTestingActivity.ShoppingListItem.class);
+                                                                                                        Log.d(TAG, "price: " + item.price);
+                                                                                                        Log.d(TAG, "purchased: " + item.purchased);
+                                                                                                        Log.d(TAG, "purchaser: " + item.purchaser);
+
+                                                                                                        list.addShoppingListItem(
+                                                                                                                new Item(snapshot.getKey(), Double.parseDouble(item.price), Boolean.parseBoolean(item.purchased), group.getRoommate(item.purchaser)));
+
+                                                                                                        if(list.getShoppingListSize() == shoppingListSize){
+                                                                                                            group.setShoppingList(list);
+                                                                                                            currentRoommate.setRoommateGroup(group);
+                                                                                                            // Home class
+                                                                                                            Intent home = new Intent();
+                                                                                                            home.setClass(context, Home.class);
+                                                                                                            home.putExtra("FirebaseUser", mAuth.getCurrentUser());
+                                                                                                            home.putExtra("currentRoommate", currentRoommate);
+                                                                                                            context.startActivity(home);
+                                                                                                            Log.d(TAG, "Shopping list for " + groupName + "has been added to group data");
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                                                                                                @Override
+                                                                                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                                                                                                @Override
+                                                                                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                                                                                                @Override
+                                                                                                public void onCancelled(@NonNull DatabaseError error) {}
+                                                                                            });
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                                                                        @Override
+                                                                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                                                                        @Override
+                                                                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                                                                        @Override
+                                                                        public void onCancelled(@NonNull DatabaseError error) {}
+                                                                    });
+                                                                }
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                                                        @Override
+                                                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                                                        @Override
+                                                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {}
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) { }
+                                            });
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                }
+
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                                }
+
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                }
+                            });
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(context, "Authentication failed. Please try again",

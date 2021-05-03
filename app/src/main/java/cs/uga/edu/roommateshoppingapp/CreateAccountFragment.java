@@ -104,11 +104,10 @@ public class CreateAccountFragment extends Fragment {
         registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if((validateEmail() == true) && (validatePassword() == true) && (confirmPassword() == true))
+                if(validateName() && validateUserName() && validateEmail() && validatePassword() && confirmPassword())
                 {
-                    Intent home = new Intent();
-                    home.setClass(getActivity(), Home.class);
-                    getActivity().startActivity(home);
+                    Roommate newRoommate = new Roommate(textInputEmail.getText().toString(), textPassword.getText().toString());
+                    dbConnection.createNewRoommate(getActivity(), newRoommate);
                 } else {
                     // do nothing
                 }

@@ -1,6 +1,8 @@
 package cs.uga.edu.roommateshoppingapp;
 
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable {
     private String name;
     private double price;
     private boolean purchased;

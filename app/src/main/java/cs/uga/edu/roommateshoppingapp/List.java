@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseUser;
 
 public class List extends AppCompatActivity {
 
@@ -41,7 +42,9 @@ public class List extends AppCompatActivity {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(List.this, Expenses.class);
                     }
-                        startActivity(selectedIntent);
+                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    startActivity(selectedIntent);
                     return true;
                 }
             };

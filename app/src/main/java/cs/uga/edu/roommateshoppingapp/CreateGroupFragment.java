@@ -1,8 +1,10 @@
 package cs.uga.edu.roommateshoppingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -102,6 +105,9 @@ public class CreateGroupFragment extends Fragment {
         itemEditTexts.add((EditText) createGroupFragment.findViewById(R.id.item9));
         itemEditTexts.add((EditText) createGroupFragment.findViewById(R.id.item10));
         continueButton = (Button) createGroupFragment.findViewById(R.id.continueButton);
+
+        BottomNavigationView bottomNav = (BottomNavigationView) createGroupFragment.findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         dbConnection = new FirebaseDBConnection();
 
@@ -196,5 +202,34 @@ public class CreateGroupFragment extends Fragment {
 
         return createGroupFragment;
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Intent selectedIntent = null;
+
+                    switch(item.getItemId())
+                    {
+                        case R.id.nav_home:
+                            selectedIntent = new Intent(getActivity(), Home.class);
+                            break;
+
+                        case R.id.nav_groups:
+                            selectedIntent = new Intent(getActivity(), Groups.class);
+                            break;
+
+                        case R.id.nav_shopping_list:
+                            selectedIntent = new Intent(getActivity(), List.class);
+                            break;
+
+                        case R.id.nav_expenses:
+                            selectedIntent = new Intent(getActivity(), Expenses.class);
+                    }
+                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getArguments().get("FirebaseUser"));
+                    startActivity(selectedIntent);
+                    return true;
+                }
+            };
 
 }
