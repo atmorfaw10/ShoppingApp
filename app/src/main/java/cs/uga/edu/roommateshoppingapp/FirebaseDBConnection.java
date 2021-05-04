@@ -60,6 +60,8 @@ public class FirebaseDBConnection {
         }
         listRef.setValue(itemsMap);
         Log.d(TAG, itemToModify.getName() + " has been modified in shopping list for " + groupName);
+        Toast.makeText(context, itemToModify.getName() + " has been modified in shopping list for " + groupName,
+                Toast.LENGTH_SHORT).show();
     }
 
     public void addRoommate(Activity context, String groupName, int groupSize, String roommateId){

@@ -10,6 +10,7 @@ public class Roommate implements Serializable{
     private String password;
     private String id;
     private RoommateGroup roommateGroup;
+    private double purchaseTotal;
 
     Roommate() {
         this.name = null;
@@ -18,6 +19,7 @@ public class Roommate implements Serializable{
         this.password = null;
         this.id = null;
         this.roommateGroup = null;
+        this.purchaseTotal = 0;
     }
 
     Roommate(String email, String password){
@@ -27,6 +29,7 @@ public class Roommate implements Serializable{
         this.password = password;
         this.id = null;
         this.roommateGroup = null;
+        this.purchaseTotal = 0;
     }
 
     Roommate(String name, String email, String username){
@@ -36,6 +39,7 @@ public class Roommate implements Serializable{
         this.password = null;
         this.id = null;
         this.roommateGroup = null;
+        this.purchaseTotal = 0;
     }
 
     Roommate(String name, String email, String username, RoommateGroup roommateGroup){
@@ -45,6 +49,7 @@ public class Roommate implements Serializable{
         this.password = null;
         this.id = null;
         this.roommateGroup = roommateGroup;
+        this.purchaseTotal = 0;
     }
 
     Roommate(String name, String email, String username, String password){
@@ -54,6 +59,7 @@ public class Roommate implements Serializable{
         this.password = password;
         this.id = null;
         this.roommateGroup = null;
+        this.purchaseTotal = 0;
     }
 
     Roommate(String name, String email, String username, String password, RoommateGroup roommateGroup){
@@ -63,6 +69,7 @@ public class Roommate implements Serializable{
         this.password = password;
         this.id = null;
         this.roommateGroup = roommateGroup;
+        this.purchaseTotal = 0;
     }
 
     public void setName(String name){
@@ -89,6 +96,14 @@ public class Roommate implements Serializable{
         this.roommateGroup = roommateGroup;
     }
 
+    public void addPurchase(double price){
+        this.purchaseTotal += price;
+    }
+
+    public void clearPurchaseTotal(){
+        this.purchaseTotal = 0;
+    }
+
     public String getName(){
         return this.name;
     }
@@ -107,6 +122,10 @@ public class Roommate implements Serializable{
 
     public String getId() {
         return this.id;
+    }
+
+    public double getPurchaseTotal(){
+        return this.purchaseTotal;
     }
 
     public RoommateGroup getRoommateGroup(){

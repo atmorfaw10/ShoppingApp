@@ -1,17 +1,10 @@
 package cs.uga.edu.roommateshoppingapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,19 +13,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
-public class List extends AppCompatActivity {
+public class RecentlyPurchasedList extends AppCompatActivity {
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private EditText itemName, itemPrice;
-    private Button addToList;
     private String item;
     private int price;
     private Item listItem;
@@ -47,13 +41,9 @@ public class List extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_recently_purchased_list);
 
-        Button addToList = (Button) findViewById(R.id.add_to_list);
-        Button modifyList = (Button) findViewById(R.id.modify_list);
         TextView listView = (TextView) findViewById(R.id.list_text_view);
-
-        Item theItem = new Item();
 
         final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
         currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
@@ -69,7 +59,7 @@ public class List extends AppCompatActivity {
             String listText = "";
             int count = 0;
             for(int i = 0; i < shoppingListArrayList.size(); i++){
-                if(!shoppingListArrayList.get(i).isPurchased()){
+                if(shoppingListArrayList.get(i).isPurchased()){
                     listText = listText + "\n\n" + (count+1) + ". " + shoppingListArrayList.get(i).getName() + "\n Price: "
                             + shoppingListArrayList.get(i).getPrice() + "\n Purchased: " + shoppingListArrayList.get(i).isPurchased();
                     count++;
@@ -77,36 +67,8 @@ public class List extends AppCompatActivity {
             }
             listView.setText(listText);
             listView.setMovementMethod(new ScrollingMovementMethod());
-            addToList.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent add = new Intent(List.this, ListPop.class);
-                    add.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                    add.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
-                    startActivity(add);
-                }
-            });
-
-            modifyList.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FirebaseDBConnection dbConnection = new FirebaseDBConnection();
-                    for(int i = 0; i < shoppingListArrayList.size(); i++) {
-                      //  if(shoppingListArrayList.get(i) == )
-                    }
-                    dbConnection.modifyShoppingListItem(List.this,currentRoommate.getRoommateGroup(), shoppingListArrayList.size(), );
-                }
-            });
         } catch (NullPointerException e){
             listView.setText("");
-            addToList = (Button) findViewById(R.id.add_group_roommate);
-            addToList.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(List.this, "You must join or create a group",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
         }
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -121,19 +83,19 @@ public class List extends AppCompatActivity {
                     switch(item.getItemId())
                     {
                         case R.id.nav_home:
-                            selectedIntent = new Intent(List.this, Home.class);
+                            selectedIntent = new Intent(RecentlyPurchasedList.this, Home.class);
                             break;
 
                         case R.id.nav_groups:
-                            selectedIntent = new Intent(List.this, Groups.class);
+                            selectedIntent = new Intent(RecentlyPurchasedList.this, Groups.class);
                             break;
 
                         case R.id.nav_shopping_list:
-                            selectedIntent = new Intent(List.this, List.class);
+                            selectedIntent = new Intent(RecentlyPurchasedList.this, RecentlyPurchasedList.class);
                             break;
 
                         case R.id.nav_expenses:
-                            selectedIntent = new Intent(List.this, Expenses.class);
+                            selectedIntent = new Intent(RecentlyPurchasedList.this, Expenses.class);
                     }
                     selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
                     selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
