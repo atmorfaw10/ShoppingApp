@@ -50,7 +50,7 @@ public class List extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         Button addToList = (Button) findViewById(R.id.add_to_list);
-        Button modifyList = (Button) findViewById(R.id.modify_list);
+        Button markPurchased = (Button) findViewById(R.id.mark_as_purchased);
         TextView listView = (TextView) findViewById(R.id.list_text_view);
 
         Item theItem = new Item();
@@ -61,6 +61,7 @@ public class List extends AppCompatActivity {
         ArrayList<Roommate> roommates;
         ShoppingList shoppingList;
         ArrayList<Item> shoppingListArrayList;
+
         try{
             group = currentRoommate.getRoommateGroup();
             roommates = group.getRoommates();
@@ -87,15 +88,20 @@ public class List extends AppCompatActivity {
                 }
             });
 
-            modifyList.setOnClickListener(new View.OnClickListener() {
+            markPurchased.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent modifyPage = new Intent(List.this, ModifyList.class );
+                    startActivity(modifyPage);
+                    /*
                     FirebaseDBConnection dbConnection = new FirebaseDBConnection();
                     for(int i = 0; i < shoppingListArrayList.size(); i++) {
                       //  if(shoppingListArrayList.get(i) == )
                     }
-                    dbConnection.modifyShoppingListItem(List.this,currentRoommate.getRoommateGroup(), shoppingListArrayList.size(), );
+                   // dbConnection.modifyShoppingListItem(List.this,currentRoommate.getRoommateGroup(), shoppingListArrayList.size(), );
+                    */
                 }
+
             });
         } catch (NullPointerException e){
             listView.setText("");
