@@ -47,6 +47,8 @@ public class CreateGroupFragment extends Fragment {
 
     private FirebaseDBConnection dbConnection;
 
+    private FirebaseUser user;
+
     private EditText groupNameEditText;
     private ArrayList<EditText> itemEditTexts;
     private Button continueButton;
@@ -111,7 +113,7 @@ public class CreateGroupFragment extends Fragment {
 
         dbConnection = new FirebaseDBConnection();
 
-        final FirebaseUser user = (FirebaseUser) getArguments().get("FirebaseUser");
+        user = (FirebaseUser) getArguments().get("FirebaseUser");
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,7 +231,7 @@ public class CreateGroupFragment extends Fragment {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(getActivity(), Expenses.class);
                     }
-                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getArguments().get("FirebaseUser"));
+                    selectedIntent.putExtra("FirebaseUser", user);
                     startActivity(selectedIntent);
                     return true;
                 }

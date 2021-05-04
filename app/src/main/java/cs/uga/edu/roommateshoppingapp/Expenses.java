@@ -25,6 +25,7 @@ public class Expenses extends AppCompatActivity {
     private TextView averageCostView;
     private TextView totalCostByRoommateView;
     private Roommate currentRoommate;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class Expenses extends AppCompatActivity {
         totalCostByRoommateView = (TextView) findViewById(R.id.total_cost_by_rmmate_view);
         Button settleCost = (Button) findViewById(R.id.settle_cost);
 
-        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
         currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
         currentRoommate.setId(user.getUid());
         RoommateGroup group;
@@ -127,7 +128,7 @@ public class Expenses extends AppCompatActivity {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(Expenses.this, Expenses.class);
                     }
-                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("FirebaseUser", user);
                     selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;

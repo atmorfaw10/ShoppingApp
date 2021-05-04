@@ -79,15 +79,15 @@ public class RoommateGroup implements Serializable {
         Roommate newRoommate = null;
         for(int i = 0; i < roommates.size(); i++){
             if(roommates.get(i).getId().equals(id)){
-                return roommates.get(i);
+                newRoommate = roommates.get(i);
+                break;
             }
         }
-
         return newRoommate;
     }
 
     public void setShoppingList(ShoppingList newShoppingList){
-        this.shoppingList = newShoppingList;
+        this.shoppingList.setShoppingListItems(newShoppingList.getShoppingListItems());
     }
 
     public ShoppingList getShoppingList(){

@@ -47,6 +47,7 @@ public class AddRoommateFragment extends Fragment {
     private String username;
     private boolean foundUser;
     private Roommate currentRoommate;
+    private FirebaseUser user;
 
     public AddRoommateFragment() {
         // Required empty public constructor
@@ -93,7 +94,7 @@ public class AddRoommateFragment extends Fragment {
 
         dbConnection = new FirebaseDBConnection();
 
-        final FirebaseUser user = (FirebaseUser) getArguments().get("FirebaseUser");
+        user = (FirebaseUser) getArguments().get("FirebaseUser");
         final RoommateGroup group = (RoommateGroup) getArguments().getSerializable("roommateGroup");
         currentRoommate = (Roommate) getArguments().getSerializable("currentRoommate");
         currentRoommate.setId(user.getUid());
@@ -193,7 +194,7 @@ public class AddRoommateFragment extends Fragment {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(getActivity(), Expenses.class);
                     }
-                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getArguments().get("FirebaseUser"));
+                    selectedIntent.putExtra("FirebaseUser", user);
                     selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;

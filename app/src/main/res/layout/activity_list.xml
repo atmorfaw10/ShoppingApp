@@ -28,17 +28,6 @@
 
 
         <Button
-            android:id="@+id/add_to_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/white"
-            android:text="Add to List"
-            android:textColor="@color/black"
-            android:translationX="110dp"
-            android:translationY="255dp" />
-
-        <Button
             android:id="@+id/view_recently_purchased_list"
             android:layout_width="169dp"
             android:layout_height="wrap_content"
@@ -50,15 +39,15 @@
             android:translationY="255dp" />
 
         <Button
-            android:id="@+id/mark_as_purchased"
+            android:id="@+id/modify_list_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:backgroundTint="@color/white"
             android:text="Modify List "
             android:textColor="@color/black"
-            android:translationY="255dp"
-            android:translationX = "100dp"/>
+            android:translationX="100dp"
+            android:translationY="255dp" />
 
         <TextView
             android:id="@+id/list_text_view"

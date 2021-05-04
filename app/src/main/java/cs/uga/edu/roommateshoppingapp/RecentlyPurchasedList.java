@@ -38,6 +38,8 @@ public class RecentlyPurchasedList extends AppCompatActivity {
     private Button saveItem;
     private Button backToShoppingList;
     private ImageButton addButton;
+    private FirebaseUser user;
+    private Roommate currentRoommate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,8 @@ public class RecentlyPurchasedList extends AppCompatActivity {
 
         TextView listView = (TextView) findViewById(R.id.list_text_view);
 
-        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
-        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
         currentRoommate.setId(user.getUid());
         RoommateGroup group;
         ArrayList<Roommate> roommates;
@@ -111,8 +113,8 @@ public class RecentlyPurchasedList extends AppCompatActivity {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(RecentlyPurchasedList.this, Expenses.class);
                     }
-                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    selectedIntent.putExtra("FirebaseUser", user);
+                    selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;
                 }

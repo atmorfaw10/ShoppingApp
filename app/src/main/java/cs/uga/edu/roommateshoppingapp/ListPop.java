@@ -5,21 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ListPop extends AppCompatActivity {
@@ -28,8 +23,9 @@ public class ListPop extends AppCompatActivity {
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private EditText itemName, itemPrice;
-    private Button addToList;
+    private Button addItemToList;
     private Button backToList;
+    private Button markAsPurchased;
     private String item;
     private String price;
     private Item listItem;
@@ -41,6 +37,7 @@ public class ListPop extends AppCompatActivity {
     private ImageButton addButton;
     private ArrayAdapter arrayAdapter;
     private Roommate currentRoommate;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +46,7 @@ public class ListPop extends AppCompatActivity {
 
         FirebaseDBConnection dbConnection = new FirebaseDBConnection();
 
-        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
         currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
         currentRoommate.setId(user.getUid());
         RoommateGroup group = currentRoommate.getRoommateGroup();
@@ -57,38 +54,92 @@ public class ListPop extends AppCompatActivity {
         ShoppingList shoppingList = group.getShoppingList();
         ArrayList<Item> shoppingListArrayList = shoppingList.getShoppingListItems();
 
-        saveItem = (Button) findViewById(R.id.save_list_button);
+        markAsPurchased = (Button) findViewById(R.id.mark_as_purchased);
+        addItemToList = (Button) findViewById(R.id.add_item_button);
         backToList = (Button) findViewById(R.id.back_button);
         EditText item = (EditText) findViewById(R.id.item_name);
         EditText price = (EditText) findViewById(R.id.item_price);
 
-       saveItem.setOnClickListener(new View.OnClickListener() {
+       markAsPurchased.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               boolean addItemToShoppingList = true;
+               boolean markItemAsPurchased = true;
                double item_Price = 0;
                String item_Name = item.getText().toString().trim();
                if(item_Name.equals("")){
                    item.setError("Field cannot be empty");
-                   addItemToShoppingList = false;
-               }
-               if(price.getText().toString().equals("")){
-                   item_Price = 0;
-               } else {
-                   item_Price = Double.parseDouble(price.getText().toString());
+                   markItemAsPurchased = false;
                }
 
-               if(addItemToShoppingList){
+               if(price.getText().toString().equals("")){
+                   price.setError("Field cannot be empty");
+                   markItemAsPurchased = false;
+               } else {
+                   item_Price = Double.parseDouble(price.getText().toString());
+                   if(item_Price <= 0.0){
+                       price.setError("To mark item as purchased, price must be greater than $0.00");
+                       markItemAsPurchased = false;
+                   }
+               }
+
+               if(markItemAsPurchased){
+                   listItem = new Item(item_Name, item_Price);
+
+                   boolean itemMarkedAsPurchased = false;
+                   for(int i = 0; i < shoppingListArrayList.size(); i++){
+                       if(shoppingListArrayList.get(i).getName().equalsIgnoreCase(item_Name)){
+                           itemMarkedAsPurchased = true;
+
+                           listItem.markAsPurchased(currentRoommate);
+                           shoppingListArrayList.set(i, listItem);
+
+                           RoommateGroup currentGroup = currentRoommate.getRoommateGroup();
+                           shoppingList.setShoppingListItems(shoppingListArrayList);
+                           currentGroup.setShoppingList(shoppingList);
+                           currentRoommate.setRoommateGroup(currentGroup);
+                           dbConnection.modifyShoppingListItem(ListPop.this, group.getGroupName(), shoppingList.getShoppingListSize(), listItem);
+                           item.setText("");
+                           price.setText("");
+                           break;
+                       }
+                   }
+                   if(!itemMarkedAsPurchased){
+                       item.setError("Item specified is not in shopping list");
+                   }
+               }
+           }
+       });
+
+       addItemToList.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               boolean addItemToList = true;
+               double item_Price = 0;
+               String item_Name = item.getText().toString().trim();
+               if(item_Name.equals("")){
+                   item.setError("Field cannot be empty");
+                   addItemToList = false;
+               }
+
+               if(!price.getText().toString().equals("")){
+                   item_Price = Double.parseDouble(price.getText().toString());
+                   if(item_Price < 0.0){
+                       item_Price = 0.0;
+                   }
+               }
+
+               if(addItemToList){
                    listItem = new Item(item_Name, item_Price);
                    if(item_Price > 0.0){
                        listItem.markAsPurchased(currentRoommate);
                    }
                    shoppingList.addShoppingListItem(listItem);
-
                    RoommateGroup currentGroup = currentRoommate.getRoommateGroup();
                    currentGroup.setShoppingList(shoppingList);
                    currentRoommate.setRoommateGroup(currentGroup);
                    dbConnection.modifyShoppingListItem(ListPop.this, group.getGroupName(), shoppingList.getShoppingListSize(), listItem);
+                   item.setText("");
+                   price.setText("");
                }
            }
        });
@@ -97,7 +148,7 @@ public class ListPop extends AppCompatActivity {
            @Override
            public void onClick(View view) {
                Intent add = new Intent(ListPop.this, List.class);
-               add.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+               add.putExtra("FirebaseUser", user);
                add.putExtra("currentRoommate", currentRoommate);
                startActivity(add);
            }

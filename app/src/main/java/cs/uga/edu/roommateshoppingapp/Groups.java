@@ -21,13 +21,14 @@ import java.util.ArrayList;
 public class Groups extends AppCompatActivity {
 
     private Roommate currentRoommate;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
 
-        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
         currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
         currentRoommate.setId(user.getUid());
         TextView roommatesTextView = (TextView) findViewById(R.id.roommates_textview);
@@ -96,7 +97,7 @@ public class Groups extends AppCompatActivity {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(Groups.this, Expenses.class);
                     }
-                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("FirebaseUser", user);
                     selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;

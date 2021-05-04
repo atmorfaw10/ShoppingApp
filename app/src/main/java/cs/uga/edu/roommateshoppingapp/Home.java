@@ -24,12 +24,13 @@ public class Home extends AppCompatActivity {
     private ArrayList<AddedFeatures> addFeaturesList;
     private FeatureAdapter featureAdapter;
     private Roommate currentRoommate;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
-        FirebaseUser user = (FirebaseUser) extras.get("FirebaseUser");
+        user = (FirebaseUser) extras.get("FirebaseUser");
         currentRoommate = (Roommate) extras.get("currentRoommate");
         currentRoommate.setId(user.getUid());
 
@@ -128,7 +129,7 @@ public class Home extends AppCompatActivity {
                         case R.id.nav_expenses:
                             selectedIntent = new Intent(Home.this, Expenses.class);
                     }
-                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("FirebaseUser", user);
                     selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;
