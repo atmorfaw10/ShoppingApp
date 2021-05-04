@@ -29,52 +29,50 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle extras = getIntent().getExtras();
-        user = (FirebaseUser) extras.get("FirebaseUser");
-        currentRoommate = (Roommate) extras.get("currentRoommate");
+        user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        currentRoommate = (Roommate) getIntent().getExtras().get("currentRoommate");
         currentRoommate.setId(user.getUid());
+        RoommateGroup group = currentRoommate.getRoommateGroup();
 
-        try {
-            if (currentRoommate.getRoommateGroup() != null) {
-                initList();
-                setContentView(R.layout.activity_home2);
-                Button modifyListButton = (Button) findViewById(R.id.modify_list);
-                modifyListButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent selectedIntent = new Intent(Home.this, List.class);
-                        selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                        selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
-                        startActivity(selectedIntent);
-                    }
-                });
+        if(group != null){
+            initList();
+            setContentView(R.layout.activity_home2);
+            Button modifyListButton = (Button) findViewById(R.id.modify_list);
+            modifyListButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent selectedIntent = new Intent(Home.this, List.class);
+                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    startActivity(selectedIntent);
+                }
+            });
 
-                Button addRoommatesButton = (Button) findViewById(R.id.add_roommates);
-                addRoommatesButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent selectedIntent = new Intent(Home.this, Groups.class);
-                        selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                        selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
-                        startActivity(selectedIntent);
-                    }
-                });
+            Button addRoommatesButton = (Button) findViewById(R.id.add_roommates);
+            addRoommatesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent selectedIntent = new Intent(Home.this, Groups.class);
+                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    startActivity(selectedIntent);
+                }
+            });
 
-                Button viewExpensesButton = (Button) findViewById(R.id.view_expenses);
-                viewExpensesButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent selectedIntent = new Intent(Home.this, Expenses.class);
-                        selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                        selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
-                        startActivity(selectedIntent);
-                    }
-                });
+            Button viewExpensesButton = (Button) findViewById(R.id.view_expenses);
+            viewExpensesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent selectedIntent = new Intent(Home.this, Expenses.class);
+                    selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    startActivity(selectedIntent);
+                }
+            });
 
-                BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-                bottomNav.setOnNavigationItemSelectedListener(navListener);
-            }
-        } catch (NullPointerException e) {
+            BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+            bottomNav.setOnNavigationItemSelectedListener(navListener);
+    } else {
             setContentView(R.layout.activity_home);
             initList();
             ImageButton settings;
@@ -90,7 +88,7 @@ public class Home extends AppCompatActivity {
                     ((RelativeLayout) findViewById(R.id.activity_home)).removeAllViews();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     CreateGroupFragment groupFragment = new CreateGroupFragment();
-                    groupFragment.setArguments(extras);
+                    groupFragment.setArguments(getIntent().getExtras());
                     fragmentTransaction.replace(R.id.activity_home, groupFragment).commit();
                 }
             });
