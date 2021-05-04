@@ -35,7 +35,19 @@
             android:backgroundTint="@color/white"
             android:text="Add to List"
             android:textColor="@color/black"
-            android:translationY="270dp" />
+            android:translationY="270dp"
+            android:translationX="-100dp"/>
+
+        <Button
+            android:id="@+id/modify_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/white"
+            android:text="Modify List"
+            android:textColor="@color/black"
+            android:translationY="270dp"
+            android:translationX="100dp"/>
 
         <TextView
             android:id="@+id/list_text_view"

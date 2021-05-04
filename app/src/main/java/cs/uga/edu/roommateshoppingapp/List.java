@@ -49,7 +49,10 @@ public class List extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         Button addToList = (Button) findViewById(R.id.add_to_list);
+        Button modifyList = (Button) findViewById(R.id.modify_list);
         TextView listView = (TextView) findViewById(R.id.list_text_view);
+
+        Item theItem = new Item();
 
         final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
         RoommateGroup group;
@@ -74,6 +77,17 @@ public class List extends AppCompatActivity {
                     add.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
                     add.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
                     startActivity(add);
+                }
+            });
+
+            modifyList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDBConnection dbConnection = new FirebaseDBConnection();
+                    for(int i = 0; i < shoppingListArrayList.size(); i++) {
+                      //  if(shoppingListArrayList.get(i) == )
+                    }
+                    dbConnection.modifyShoppingListItem(List.this,currentRoommate.getRoommateGroup(), shoppingListArrayList.size(), );
                 }
             });
         } catch (NullPointerException e){

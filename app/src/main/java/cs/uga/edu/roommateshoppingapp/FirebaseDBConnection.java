@@ -44,7 +44,7 @@ public class FirebaseDBConnection {
         currentUser = null;
     }
 
-    public void modifyShoppingListItem(String groupName, int listSize, Item itemToModify){
+    public void modifyShoppingListItem(Activity context, String groupName, int listSize, Item itemToModify){
         final DatabaseReference groupListRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/size");
         groupListRef.setValue(listSize);
 

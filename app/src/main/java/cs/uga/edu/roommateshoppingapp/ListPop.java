@@ -60,7 +60,7 @@ public class ListPop extends AppCompatActivity {
                listItem.markAsPurchased(currentRoommate);
                shoppingList.addShoppingListItem(listItem);
 
-               dbConnection.modifyShoppingListItem(group.getGroupName(), shoppingList.getShoppingListSize(), listItem);
+               //dbConnection.modifyShoppingListItem(group.getGroupName(), shoppingList.getShoppingListSize(), listItem);
            }
        });
     }
