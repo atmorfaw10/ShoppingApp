@@ -43,6 +43,7 @@ public class LoginFragment extends Fragment {
     private EditText email;
     private EditText password;
     private Button signInButton;
+    private Button backButton;
 
     private String userName;
     private String userEmail;
@@ -88,6 +89,7 @@ public class LoginFragment extends Fragment {
         email = (EditText) loginFragment.findViewById(R.id.login_email);
         password = (EditText) loginFragment.findViewById(R.id.password);
         signInButton = (Button) loginFragment.findViewById(R.id.login);
+        backButton = (Button) loginFragment.findViewById(R.id.back_to_main);
         userEmail = "";
         userPassword = "";
 
@@ -106,6 +108,17 @@ public class LoginFragment extends Fragment {
                 } else {
                     dbConnection.signInRoommate(getActivity(), userEmail, userPassword);
                 }
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Splash class
+                Intent splash = new Intent();
+                splash.setClass(getActivity(), SplashActivity.class);
+                getActivity().startActivity(splash);
+                Log.d(TAG, "Returning to splash activity");
             }
         });
 

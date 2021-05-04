@@ -12,6 +12,7 @@
         <activity android:name=".ListPop" android:theme="@style/CustomTheme"></activity>
         <activity android:name=".Expenses" />
         <activity android:name=".List" />
+        <activity android:name=".RecentlyPurchasedList" />
         <activity android:name=".Groups" />
         <activity android:name=".Home" />
         <activity android:name=".FirebaseTestingActivity" />

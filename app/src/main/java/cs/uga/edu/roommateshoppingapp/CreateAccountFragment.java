@@ -30,6 +30,8 @@ import java.util.regex.Pattern;
  * create an instance of this fragment.
  */
 public class CreateAccountFragment extends Fragment {
+    private static final String TAG = "CreateAccountFragment";
+
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^" +
             "(?=.*[0-9])" +  // at least 1 digit
             "(?=.*[a-z])" +  // at least 1 lower case letter
@@ -55,6 +57,7 @@ public class CreateAccountFragment extends Fragment {
     private EditText textUserName; // user name edit text view
     private EditText textPassword; // password edit text view
     private EditText reEnteredPassword; // re-entered password edit text view
+    private Button backButton;
 
     String nameInput; // string of inputted name
     String usernameInput; // string of inputted username
@@ -112,6 +115,17 @@ public class CreateAccountFragment extends Fragment {
         reEnteredPassword = (EditText) createAccountFragment.findViewById(R.id.confirm_password);
 
         registration = (Button) createAccountFragment.findViewById(R.id.register);
+        backButton = (Button) createAccountFragment.findViewById(R.id.back_to_main2);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Splash class
+                Intent splash = new Intent();
+                splash.setClass(getActivity(), SplashActivity.class);
+                getActivity().startActivity(splash);
+                Log.d(TAG, "Returning to splash activity");
+            }
+        });
 
         dbConnection = new FirebaseDBConnection();
 

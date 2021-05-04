@@ -20,13 +20,16 @@ import java.util.ArrayList;
 
 public class Groups extends AppCompatActivity {
 
+    private Roommate currentRoommate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
 
-        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
-        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
+        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        currentRoommate.setId(user.getUid());
         TextView roommatesTextView = (TextView) findViewById(R.id.roommates_textview);
         RoommateGroup group;
         ArrayList<Roommate> roommates;
@@ -35,7 +38,7 @@ public class Groups extends AppCompatActivity {
             roommates = group.getRoommates();
             String roommateText = "";
             for(int i = 0; i < roommates.size(); i++){
-                roommateText = roommateText + "\n" + (i+1) + ". " + roommates.get(i).getName() + ", Username: " + roommates.get(i).getUsername();
+                roommateText = roommateText + "\n\n" + (i+1) + ". " + roommates.get(i).getName() + "\n Username: " + roommates.get(i).getUsername();
             }
             roommatesTextView.setText(roommateText);
             Button addRoommateButton = (Button) findViewById(R.id.add_group_roommate);
@@ -94,7 +97,7 @@ public class Groups extends AppCompatActivity {
                             selectedIntent = new Intent(Groups.this, Expenses.class);
                     }
                     selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;
                 }

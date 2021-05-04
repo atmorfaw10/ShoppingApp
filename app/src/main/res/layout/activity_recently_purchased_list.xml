@@ -24,7 +24,7 @@
             android:text="Recently Purchased List"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
-            android:translationY="30dp" />
+            android:translationY="40dp" />
 
 
         <TextView
@@ -37,12 +37,21 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:translationY="-15dp"
+            android:translationY="-10dp"
             app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8"
             app:layout_constraintVertical_bias="0.647" />
+
+        <Button
+            android:id="@+id/back_to_shopping_list"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="Back to Shopping List"
+            android:translationX="20dp"
+            android:translationY="-35dp" />
 
     </FrameLayout>
 

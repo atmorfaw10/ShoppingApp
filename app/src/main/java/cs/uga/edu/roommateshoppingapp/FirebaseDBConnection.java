@@ -44,6 +44,17 @@ public class FirebaseDBConnection {
         currentUser = null;
     }
 
+    public void removeShoppingListItem(Activity context, String groupName, int listSize, Item itemToModify){
+        final DatabaseReference groupListRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/size");
+        groupListRef.setValue(listSize);
+
+        final DatabaseReference listRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/" + itemToModify.getName());
+        listRef.setValue(null);
+        Log.d(TAG, itemToModify.getName() + " has been removed in shopping list for " + groupName);
+        Toast.makeText(context, itemToModify.getName() + " has been removed in shopping list for " + groupName,
+                Toast.LENGTH_SHORT).show();
+    }
+
     public void modifyShoppingListItem(Activity context, String groupName, int listSize, Item itemToModify){
         final DatabaseReference groupListRef = FirebaseDatabase.getInstance().getReference("shoppingLists/" + groupName + "/size");
         groupListRef.setValue(listSize);
@@ -147,9 +158,7 @@ public class FirebaseDBConnection {
                                         Intent home = new Intent();
                                         home.setClass(context, Home.class);
                                         home.putExtra("FirebaseUser", mAuth.getCurrentUser());
-                                        Bundle bundle = new Bundle();
-                                        bundle.putSerializable("currentRoommate", newRoommate);
-                                        home.putExtra("bundle", bundle);
+                                        home.putExtra("currentRoommate", newRoommate);
                                         context.startActivity(home);
                                     }
                                 }
@@ -212,9 +221,7 @@ public class FirebaseDBConnection {
                                                 Intent home = new Intent();
                                                 home.setClass(context, Home.class);
                                                 home.putExtra("FirebaseUser", mAuth.getCurrentUser());
-                                                Bundle bundle = new Bundle();
-                                                bundle.putSerializable("currentRoommate", currentRoommate);
-                                                home.putExtra("bundle", bundle);
+                                                home.putExtra("currentRoommate", currentRoommate);
                                                 context.startActivity(home);
                                             } else {
                                                 String groupName = user.roommateGroup;

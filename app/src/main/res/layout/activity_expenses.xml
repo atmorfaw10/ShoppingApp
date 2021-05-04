@@ -62,6 +62,7 @@
             android:layout_width="300dp"
             android:layout_height="190dp"
             android:layout_gravity="center"
+            android:gravity="top"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:translationY="90dp" />

@@ -24,6 +24,7 @@ public class Expenses extends AppCompatActivity {
     private TextView totalCostView;
     private TextView averageCostView;
     private TextView totalCostByRoommateView;
+    private Roommate currentRoommate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,9 @@ public class Expenses extends AppCompatActivity {
         totalCostByRoommateView = (TextView) findViewById(R.id.total_cost_by_rmmate_view);
         Button settleCost = (Button) findViewById(R.id.settle_cost);
 
-        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
-        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
+        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        currentRoommate.setId(user.getUid());
         RoommateGroup group;
         ArrayList<Roommate> roommates;
         ShoppingList shoppingList;
@@ -50,19 +52,44 @@ public class Expenses extends AppCompatActivity {
             totalCostView.setText("$" + totalCost);
             String averageCost = String.format("%,.2f", shoppingList.calculateAverageCostPerRoommate(group.getRoommates().size()));
             averageCostView.setText("$" + averageCost);
+            Log.d(TAG, "Calculated average cost and total cost");
+
             String totalCostPerRoommate = "";
-            for(Item item: shoppingListArrayList){
-                if(item.isPurchased()){
-                    group.getRoommate(item.getPurchaser().getId()).addPurchase(item.getPrice());
+            for(int i = 0; i < shoppingListArrayList.size(); i++) {
+                Item currentItem = shoppingListArrayList.get(i);
+                if (currentItem.isPurchased()) {
+                    group.getRoommate(currentItem.getPurchaser().getId()).addPurchase(currentItem.getPrice());
                 }
             }
-
+            Log.d(TAG, "Added purchase costs to roommate objects");
+            
             roommates = group.getRoommates();
-            for(Roommate roommate: roommates){
-                totalCostPerRoommate += "\n\n" + roommate.getName() + " - $" + roommate.getPurchaseTotal();
+            for(int i = 0; i < roommates.size(); i++){
+                Roommate roommate = roommates.get(i);
+                totalCostPerRoommate += "\n\n" + roommate.getName() + " - $" + String.format("%,.2f", roommate.getPurchaseTotal());
                 Log.d(TAG, totalCostPerRoommate);
             }
             totalCostByRoommateView.setText(totalCostPerRoommate);
+            Log.d(TAG, "Added purchase costs for each roommate");
+
+            settleCost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    // Settle the cost [clear the recently purchased list
+                    for(int i = 0; i < shoppingListArrayList.size(); i++){
+                        if(shoppingListArrayList.get(i).isPurchased()){
+                            new FirebaseDBConnection().removeShoppingListItem(Expenses.this,
+                                    group.getGroupName(), shoppingListArrayList.size()-1, shoppingListArrayList.get(i));
+                            group.getRoommate(shoppingListArrayList.get(i).getPurchaser().getId()).clearPurchaseTotal();
+                            shoppingListArrayList.remove(i);
+                        }
+                    }
+                    shoppingList.setShoppingListItems(shoppingListArrayList);
+                    group.setShoppingList(shoppingList);
+                    currentRoommate.setRoommateGroup(group);
+                    Log.d(TAG, "Recently purchased list has been cleared");
+                }
+            });
 
         } catch(NullPointerException e){
             settleCost.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +128,7 @@ public class Expenses extends AppCompatActivity {
                             selectedIntent = new Intent(Expenses.this, Expenses.class);
                     }
                     selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;
                 }

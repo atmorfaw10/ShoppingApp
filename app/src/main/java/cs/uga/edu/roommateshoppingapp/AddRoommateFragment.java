@@ -46,6 +46,7 @@ public class AddRoommateFragment extends Fragment {
 
     private String username;
     private boolean foundUser;
+    private Roommate currentRoommate;
 
     public AddRoommateFragment() {
         // Required empty public constructor
@@ -94,8 +95,8 @@ public class AddRoommateFragment extends Fragment {
 
         final FirebaseUser user = (FirebaseUser) getArguments().get("FirebaseUser");
         final RoommateGroup group = (RoommateGroup) getArguments().getSerializable("roommateGroup");
-        final Roommate currentRoommate = (Roommate) getArguments().getSerializable("currentRoommate");
-        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
+        currentRoommate = (Roommate) getArguments().getSerializable("currentRoommate");
+        currentRoommate.setId(user.getUid());
         final Roommate newRoommate = new Roommate();
 
         addRoommateButton.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +194,7 @@ public class AddRoommateFragment extends Fragment {
                             selectedIntent = new Intent(getActivity(), Expenses.class);
                     }
                     selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getArguments().get("FirebaseUser"));
-                    selectedIntent.putExtra("currentRoommate", (Roommate) getArguments().getSerializable("currentRoommate"));
+                    selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;
                 }

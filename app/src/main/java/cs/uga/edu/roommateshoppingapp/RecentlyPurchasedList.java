@@ -36,6 +36,7 @@ public class RecentlyPurchasedList extends AppCompatActivity {
     private TextView textView;
     private ArrayAdapter arrayAdapter;
     private Button saveItem;
+    private Button backToShoppingList;
     private ImageButton addButton;
 
     @Override
@@ -45,12 +46,14 @@ public class RecentlyPurchasedList extends AppCompatActivity {
 
         TextView listView = (TextView) findViewById(R.id.list_text_view);
 
+        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
         final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
-        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
+        currentRoommate.setId(user.getUid());
         RoommateGroup group;
         ArrayList<Roommate> roommates;
         ShoppingList shoppingList;
         ArrayList<Item> shoppingListArrayList;
+        backToShoppingList = (Button) findViewById(R.id.back_to_shopping_list);
         try{
             group = currentRoommate.getRoommateGroup();
             roommates = group.getRoommates();
@@ -61,12 +64,23 @@ public class RecentlyPurchasedList extends AppCompatActivity {
             for(int i = 0; i < shoppingListArrayList.size(); i++){
                 if(shoppingListArrayList.get(i).isPurchased()){
                     listText = listText + "\n\n" + (count+1) + ". " + shoppingListArrayList.get(i).getName() + "\n Price: "
-                            + shoppingListArrayList.get(i).getPrice() + "\n Purchased: " + shoppingListArrayList.get(i).isPurchased();
+                            + shoppingListArrayList.get(i).getPrice() + "\n Purchased: " + shoppingListArrayList.get(i).isPurchased()
+                            + "\n Purchaser: " + shoppingListArrayList.get(i).getPurchaser().getName();
                     count++;
                 }
             }
             listView.setText(listText);
             listView.setMovementMethod(new ScrollingMovementMethod());
+
+            backToShoppingList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent add = new Intent(RecentlyPurchasedList.this, List.class);
+                    add.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
+                    add.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    startActivity(add);
+                }
+            });
         } catch (NullPointerException e){
             listView.setText("");
         }

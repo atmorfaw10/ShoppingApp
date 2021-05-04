@@ -23,14 +23,15 @@ import java.util.ArrayList;
 public class Home extends AppCompatActivity {
     private ArrayList<AddedFeatures> addFeaturesList;
     private FeatureAdapter featureAdapter;
+    private Roommate currentRoommate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         FirebaseUser user = (FirebaseUser) extras.get("FirebaseUser");
-        Roommate currentRoommate = (Roommate) extras.get("currentRoommate");
-        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
+        currentRoommate = (Roommate) extras.get("currentRoommate");
+        currentRoommate.setId(user.getUid());
 
         try {
             if (currentRoommate.getRoommateGroup() != null) {
@@ -128,7 +129,7 @@ public class Home extends AppCompatActivity {
                             selectedIntent = new Intent(Home.this, Expenses.class);
                     }
                     selectedIntent.putExtra("FirebaseUser", (FirebaseUser) getIntent().getExtras().get("FirebaseUser"));
-                    selectedIntent.putExtra("currentRoommate", (Roommate) getIntent().getExtras().get("currentRoommate"));
+                    selectedIntent.putExtra("currentRoommate", currentRoommate);
                     startActivity(selectedIntent);
                     return true;
                 }

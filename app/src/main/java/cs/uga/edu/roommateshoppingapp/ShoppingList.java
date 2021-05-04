@@ -18,6 +18,7 @@ public class ShoppingList implements Serializable {
     }
 
     public void setShoppingListItems(ArrayList<Item> shoppingListItems) {
+        this.shoppingListItems = new ArrayList<>();
         for(Item item: shoppingListItems){
             this.shoppingListItems.add(item);
         }

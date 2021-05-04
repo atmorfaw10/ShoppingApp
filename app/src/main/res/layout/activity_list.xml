@@ -35,6 +35,18 @@
             android:backgroundTint="@color/white"
             android:text="Add to List"
             android:textColor="@color/black"
+            android:translationX="110dp"
+            android:translationY="255dp" />
+
+        <Button
+            android:id="@+id/view_recently_purchased_list"
+            android:layout_width="169dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/white"
+            android:text="View Recently Purchased List"
+            android:textColor="@color/black"
+            android:translationX="-90dp"
             android:translationY="255dp" />
 
         <TextView

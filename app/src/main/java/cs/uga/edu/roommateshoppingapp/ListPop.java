@@ -40,6 +40,7 @@ public class ListPop extends AppCompatActivity {
     private Button saveItem;
     private ImageButton addButton;
     private ArrayAdapter arrayAdapter;
+    private Roommate currentRoommate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,9 @@ public class ListPop extends AppCompatActivity {
 
         FirebaseDBConnection dbConnection = new FirebaseDBConnection();
 
-        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
-        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
+        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
+        currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        currentRoommate.setId(user.getUid());
         RoommateGroup group = currentRoommate.getRoommateGroup();
         ArrayList<Roommate> roommates = group.getRoommates();
         ShoppingList shoppingList = group.getShoppingList();
