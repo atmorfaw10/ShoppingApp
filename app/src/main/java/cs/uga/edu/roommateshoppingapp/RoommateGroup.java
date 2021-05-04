@@ -13,7 +13,7 @@ public class RoommateGroup implements Serializable {
     RoommateGroup() {
         this.groupName = null;
         this.roommates = null;
-        shoppingList = null;
+        this.shoppingList = null;
     }
 
     RoommateGroup(String groupName){
@@ -87,6 +87,9 @@ public class RoommateGroup implements Serializable {
     }
 
     public void setShoppingList(ShoppingList newShoppingList){
+        if(this.shoppingList == null){
+            this.shoppingList = new ShoppingList();
+        }
         this.shoppingList.setShoppingListItems(newShoppingList.getShoppingListItems());
     }
 
