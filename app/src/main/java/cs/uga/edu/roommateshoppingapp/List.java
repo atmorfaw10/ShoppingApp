@@ -52,16 +52,19 @@ public class List extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         Button addToList = (Button) findViewById(R.id.add_to_list);
+        Button markPurchased = (Button) findViewById(R.id.mark_as_purchased);
         TextView listView = (TextView) findViewById(R.id.list_text_view);
         viewRecentlyPurchasedList = (Button) findViewById(R.id.view_recently_purchased_list);
 
-        final FirebaseUser user = (FirebaseUser) getIntent().getExtras().get("FirebaseUser");
-        currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
-        currentRoommate.setId(user.getUid());
+        Item theItem = new Item();
+
+        final Roommate currentRoommate = (Roommate) getIntent().getExtras().getSerializable("currentRoommate");
+        currentRoommate.setId(new FirebaseDBConnection().getmAuth().getUid());
         RoommateGroup group;
         ArrayList<Roommate> roommates;
         ShoppingList shoppingList;
         ArrayList<Item> shoppingListArrayList;
+
         try{
             group = currentRoommate.getRoommateGroup();
             roommates = group.getRoommates();
